@@ -23,6 +23,11 @@ public class ChiSquare
 		return testDependence(ArrayUtil.convertCategoriesToContingencyTable(cat1, cat2));
 	}
 
+	public static double testDependence(int[] cat, boolean[] control, boolean[] test)
+	{
+		return testDependence(ArrayUtil.convertCategorySubsetsToContingencyTables(cat, control, test));
+	}
+
 	/**
 	 * Calculates the p-value of the given chi-square value with the given degrees of freedom.
 	 * @param x chi value
@@ -76,7 +81,7 @@ public class ChiSquare
 
 	public static void main(String[] args)
 	{
-		int n = 3;
+		int n = 2;
 		int m = 3;
 
 		List<Double> pvals = new ArrayList<>();

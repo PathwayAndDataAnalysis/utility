@@ -12,15 +12,70 @@ public class ArrayUtil
 
 	public static double mean(double[] v)
 	{
+		double s = 0;
+		int c = 0;
+		for (double aV : v)
+		{
+			if (!Double.isNaN(aV))
+			{
+				s += aV;
+				c++;
+			}
+		}
+		return s / c;
+	}
+
+	public static double mean(double[] v, boolean[] use)
+	{
+		double s = 0;
+		int c = 0;
+		for (int i = 0; i < use.length; i++)
+		{
+			if (use[i] && !Double.isNaN(v[i]))
+			{
+				s += v[i];
+				c++;
+			}
+		}
+		return s / c;
+	}
+
+	public static double mean(int[] v)
+	{
 		if (v.length == 1) return v[0];
 
-		return sum(v) / v.length;
+		return sum(v) / (double) v.length;
+	}
+
+	public static double mean(int[] v, boolean[] use)
+	{
+		double s = 0;
+		int c = 0;
+		for (int i = 0; i < use.length; i++)
+		{
+			if (use[i] && v[i] != ABSENT_INT)
+			{
+				s += v[i];
+				c++;
+			}
+		}
+		return s / c;
 	}
 
 	public static double sum(double[] v)
 	{
 		double s = 0;
 		for (double v1 : v)
+		{
+			s += v1;
+		}
+		return s;
+	}
+
+	public static int sum(int[] v)
+	{
+		int s = 0;
+		for (int v1 : v)
 		{
 			s += v1;
 		}
@@ -143,6 +198,26 @@ public class ArrayUtil
 		return t;
 	}
 
+	public static long[][] convertCategorySubsetsToContingencyTables(int[] c, boolean[] control, boolean[] test)
+	{
+		if (c.length != control.length || c.length != test.length)
+		{
+			throw new IllegalArgumentException("Array lengths has to be equal.");
+		}
+
+		List<Integer> list = getOrderedCategories(c);
+		long[][] t = new long[2][list.size()];
+
+		for (int i = 0; i < c.length; i++)
+		{
+			if (control[i] || test[i])
+			{
+				t[test[i] ? 1 : 0][list.indexOf(c[i])]++;
+			}
+		}
+		return t;
+	}
+
 	public static List<Integer> getOrderedCategories(int[] cat)
 	{
 		List<Integer> list = new ArrayList<>();
@@ -213,6 +288,15 @@ public class ArrayUtil
 			.mapToDouble(i -> vals[i]).toArray();
 	}
 
+	public static int[] subset(int[] vals, boolean[] select)
+	{
+		if (vals.length != select.length) throw new IllegalArgumentException("Parameter array lengths must be equal.");
+
+		return IntStream.range(0, vals.length)
+			.filter(i -> select[i] && vals[i] != ABSENT_INT)
+			.map(i -> vals[i]).toArray();
+	}
+
 	public static int countValue(boolean[] b, boolean val)
 	{
 		int cnt = 0;
@@ -221,6 +305,21 @@ public class ArrayUtil
 			if (v == val) cnt++;
 		}
 		return cnt;
+	}
+
+	public static int countValue(int[] arr, int val)
+	{
+		int cnt = 0;
+		for (int v : arr)
+		{
+			if (v == val) cnt++;
+		}
+		return cnt;
+	}
+
+	public static int countValues(String[] arr, String... query)
+	{
+		return (int) Arrays.stream(arr).filter(Arrays.asList(query)::contains).count();
 	}
 
 	public static String getString(String delim, Object... o)
@@ -232,5 +331,27 @@ public class ArrayUtil
 		IntStream.range(1, o.length).forEach(i -> sb.append(delim).append(o[i]));
 
 		return sb.toString();
+	}
+
+	public static int indexOf(String[] array, String... query)
+	{
+		for (int i = 0; i < array.length; i++)
+		{
+			for (String q : query)
+			{
+				if (array[i].equals(q)) return i;
+			}
+		}
+		return -1;
+	}
+
+	public static boolean[] negate(boolean[] b)
+	{
+		boolean[] n = new boolean[b.length];
+		for (int i = 0; i < b.length; i++)
+		{
+			n[i] = !b[i];
+		}
+		return n;
 	}
 }

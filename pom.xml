@@ -74,4 +74,13 @@
 			<version>3.11-beta2</version>
 		</dependency>
 	</dependencies>
+
+	<distributionManagement>
+		<repository>
+			<id>panda.local</id>
+			<name>Pathway and Data Analysis Local Repository</name>
+			<url>file://${basedir}/../repo/maven-repo/</url>
+		</repository>
+	</distributionManagement>
+
 </project>

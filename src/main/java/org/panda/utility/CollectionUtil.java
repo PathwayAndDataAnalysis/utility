@@ -44,7 +44,7 @@ public class CollectionUtil
 
 		for (int i = 0; i < cnt.length; i++)
 		{
-			List<T> list = new ArrayList<T>(venn[i]);
+			List<T> list = new ArrayList<>(venn[i]);
 			Collections.sort(list);
 
 			System.out.print(name[i] + "\t" + cnt[i] + "\t" + list);
@@ -252,4 +252,10 @@ public class CollectionUtil
 		d.removeAll(B);
 		return d;
 	}
+
+	public static int countValues(List<String> list, String... query)
+	{
+		return (int) list.stream().filter(Arrays.asList(query)::contains).count();
+	}
+
 }

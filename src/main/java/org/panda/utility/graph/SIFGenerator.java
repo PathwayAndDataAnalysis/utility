@@ -53,11 +53,23 @@ public class SIFGenerator
 	 */
 	private Map<String, Set<InfoBox>> infoMap;
 
+	/**
+	 * The file name without .sif or .format extensions
+	 */
+	private String filenameWithoutExtension;
+
+	/**
+	 * Optional conversion map if some of hte node names are desired to be different than the provided in the final sif
+	 * graph. Can be partial.
+	 */
+	private Map<String, String> nodeNameConversionMap;
+
 	private int defaultEdgeWidth;
 	private int defaultNodeBorderWidth;
 	private Color defaultNodeColor;
 	private Color defaultNodeBorderColor;
 	private Color defaultTextColor;
+
 	private Color defaultEdgeColor;
 
 	public SIFGenerator()
@@ -71,6 +83,7 @@ public class SIFGenerator
 
 	public void write(String fileNameWithoutExtension)
 	{
+		this.filenameWithoutExtension = fileNameWithoutExtension;
 		prepare();
 
 		if (edges == null) return;
@@ -82,7 +95,7 @@ public class SIFGenerator
 			Set<String> nodesInEdges = edges.stream().map(e -> new String[]{e.source, e.target}).flatMap(Arrays::stream)
 				.collect(Collectors.toSet());
 			if (nodes != null) nodes.stream().filter(n -> !nodesInEdges.contains(n)).forEach(n ->
-				FileUtil.writeln(n, writer1));
+				FileUtil.writeln(convert(n), writer1));
 			writer1.close();
 
 			BufferedWriter writer2 = Files.newBufferedWriter(Paths.get(fileNameWithoutExtension + ".format"));
@@ -96,34 +109,34 @@ public class SIFGenerator
 			if (nodeColorMap != null)
 			{
 				nodeColorMap.keySet().forEach(n ->
-					FileUtil.writeln("node\t" + n + "\tcolor\t" + colorString(nodeColorMap.get(n)), writer2));
+					FileUtil.writeln("node\t" + convert(n) + "\tcolor\t" + colorString(nodeColorMap.get(n)), writer2));
 			}
 
 			if (nodeBorderColorMap != null)
 			{
 				nodeBorderColorMap.keySet().forEach(n ->
-					FileUtil.writeln("node\t" + n + "\tbordercolor\t" + colorString(nodeBorderColorMap.get(n)),
+					FileUtil.writeln("node\t" + convert(n) + "\tbordercolor\t" + colorString(nodeBorderColorMap.get(n)),
 						writer2));
 			}
 
 			if (nodeTooltipMap != null)
 			{
 				nodeTooltipMap.keySet().forEach(n ->
-					FileUtil.writeln("node\t" + n + "\ttooltip\t" + nodeTooltipMap.get(n), writer2));
+					FileUtil.writeln("node\t" + convert(n) + "\ttooltip\t" + nodeTooltipMap.get(n), writer2));
 			}
 
 			if (edgeColorMap != null)
 			{
 				edgeColorMap.keySet().forEach(e ->
-					FileUtil.writeln("edge\t" + ArrayUtil.getString(" ", e.source, e.type, e.target) + "\tcolor\t" +
-						colorString(edgeColorMap.get(e)), writer2));
+					FileUtil.writeln("edge\t" + ArrayUtil.getString(" ", convert(e.source), e.type, convert(e.target)) +
+						"\tcolor\t" + colorString(edgeColorMap.get(e)), writer2));
 			}
 
 			if (infoMap != null)
 			{
 				infoMap.keySet().forEach(n ->
 					infoMap.get(n).forEach(b ->
-						FileUtil.writeln("node\t" + n + "\trppasite\t" + b.toString(), writer2)));
+						FileUtil.writeln("node\t" + convert(n) + "\trppasite\t" + b.toString(), writer2)));
 			}
 
 			writer2.close();
@@ -132,6 +145,12 @@ public class SIFGenerator
 		{
 			throw new RuntimeException(e);
 		}
+	}
+
+	private String convert(String molecule)
+	{
+		if (nodeNameConversionMap == null || !nodeNameConversionMap.containsKey(molecule)) return molecule;
+		return nodeNameConversionMap.get(molecule);
 	}
 
 	/**
@@ -231,6 +250,16 @@ public class SIFGenerator
 		return c.getRed() + " " + c.getGreen() + " " + c.getBlue();
 	}
 
+	public void setNodeNameConversionMap(Map<String, String> nodeNameConversionMap)
+	{
+		this.nodeNameConversionMap = nodeNameConversionMap;
+	}
+
+	public String getFilenameWithoutExtension()
+	{
+		return filenameWithoutExtension;
+	}
+
 	class Edge
 	{
 		String source;
@@ -262,7 +291,7 @@ public class SIFGenerator
 		@Override
 		public String toString()
 		{
-			String s = source + "\t" + type + "\t" + target;
+			String s = convert(source) + "\t" + type + "\t" + convert(target);
 			if (mediators != null) s += "\t" + mediators;
 			return s;
 		}

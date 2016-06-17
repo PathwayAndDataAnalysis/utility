@@ -309,6 +309,33 @@ public class FileUtil
 		write(line + "\n", writer);
 	}
 
+	public static void lnwrite(String line, Writer writer)
+	{
+		write("\n" + line, writer);
+	}
+
+	public static void exciseFileToLines(String inFile, String outFile, LineSelector selector) { try
+	{
+		BufferedWriter writer = Files.newBufferedWriter(Paths.get(outFile));
+		Files.lines(Paths.get(inFile)).filter(selector::select).forEach(line ->
+			FileUtil.writeln(line, writer));
+	}
+	catch (IOException e){throw new RuntimeException(e);}}
+
+	public interface LineSelector
+	{
+		boolean select(String line);
+	}
+
+	public static void countTermsInTabDelimitedColumn(String filename, int colIndex) { try
+	{
+		TermCounter tc = new TermCounter();
+		Files.lines(Paths.get(filename)).map(line -> line.split("\t")).filter(token -> token.length > colIndex)
+			.forEach(token -> tc.addTerm(token[colIndex]));
+		tc.print();
+	}
+	catch (IOException e){throw new RuntimeException(e);}}
+
 	//----- Section: XLSX related --------------------------------------------------------------------------------------
 
 	/**
@@ -377,6 +404,7 @@ public class FileUtil
 	catch (IOException e){throw new RuntimeException(e);}}
 
 
+
 	//--- Section: SIF files ------------------------------------------------------------------------------------------|
 
 	public static void replaceNodeNamesInSIFFile(String filename, Map<String, String> substutitionMap) { try
@@ -414,9 +442,25 @@ public class FileUtil
 	}
 	catch (IOException e){throw new RuntimeException(e);}}
 
+
 	public static void main(String[] args) throws IOException
 	{
+//		printLines("/home/babur/Documents/TCGA/PanCan/mutation.maf", "MTOR\t");
+
+		exciseFileToLines("/home/babur/Documents/TCGA/PanCan/mutation.maf", "/home/babur/Documents/Temp/temp.txt",
+			line -> line.startsWith("Hugo_Symbol\t") ||
+				(line.startsWith("MTOR\t") && !line.contains("\tIntron\t") && !line.contains("\tSilent\t")));
+//					&& line.contains("\tp.R766")));
+
+
 //		printLines("SIFWithLoc.sif", "controls-transport-of");
-		System.out.println(Math.sqrt(countLines("/home/babur/Documents/Temp/distances.txt")));
+
+//		System.out.println(countLines("/home/babur/Documents/mutex/TCGA/PanCan/1/1/DataMatrix.txt"));
+
+//		HashSet<String> query = new HashSet<>(Arrays.asList("Hugo_Symbol\t", "SP3\t"));
+//		exciseFileToLines("/home/babur/Documents/TCGA/PanCan/mutation.maf", "/home/babur/Documents/Temp/SP3.maf",
+//			line -> query.stream().anyMatch(line::startsWith));
+
+//		countTermsInTabDelimitedColumn("/home/babur/Documents/TCGA/PanCan/mutation.maf", 8);
 	}
 }

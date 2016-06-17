@@ -70,6 +70,17 @@ public class FishersExactTest
 			featuredOverall - featuredSelected, selected - featuredSelected, featuredSelected);
 	}
 
+	public static double calcImprovishmentPval(int size, int featuredOverall, int selected,
+		int featuredSelected)
+	{
+		assert selected <= size;
+		assert featuredSelected <= selected;
+		assert featuredSelected <= featuredOverall;
+
+		return calcNegativeDepPval(size - selected - featuredOverall + featuredSelected,
+			featuredOverall - featuredSelected, selected - featuredSelected, featuredSelected);
+	}
+
 	public static double getPvalOfMeanDiff_discretizeToTwo(double[] x0, double[] x1)
 	{
 		double[] d = new double[x0.length + x1.length];

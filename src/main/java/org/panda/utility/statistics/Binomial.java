@@ -21,7 +21,7 @@ public class Binomial
 
 		double pval = 0;
 		
-		List<Integer> twos = new ArrayList<Integer>();
+		List<Integer> twos = new ArrayList<>();
 		for (int i = 0; i < tosses; i++)
 		{
 			twos.add(2);
@@ -29,10 +29,10 @@ public class Binomial
 
 		for (int i = 0; i <= heads; i++)
 		{
-			List<Integer> nom = new ArrayList<Integer>();
+			List<Integer> nom = new ArrayList<>();
 			nom.add(tosses);
 
-			List<Integer> denom = new ArrayList<Integer>(twos);
+			List<Integer> denom = new ArrayList<>(twos);
 			denom.add(i);
 			denom.add(tosses-i);
 			
