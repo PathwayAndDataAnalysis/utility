@@ -151,6 +151,11 @@ public class Graph implements Serializable
 		}
 	}
 
+	public boolean hasDirectedEdge(String source, String target)
+	{
+		return dwMap.containsKey(source) && dwMap.get(source).contains(target);
+	}
+
 	public String getMediatorsInString(String source, String target)
 	{
 		String s = "";
@@ -195,7 +200,7 @@ public class Graph implements Serializable
 		if (!mediators.get(source).containsKey(target))
 			mediators.get(source).put(target, new HashSet<>());
 
-		mediators.get(source).get(target).addAll(Arrays.asList(mediatorsStr.split(" ")));
+		mediators.get(source).get(target).addAll(Arrays.asList(mediatorsStr.split(" |;")));
 	}
 
 	public void putRelation(String source, String target, boolean directed)
@@ -204,15 +209,15 @@ public class Graph implements Serializable
 
 		if (directed)
 		{
-			if (!upMap.containsKey(target)) upMap.put(target, new HashSet<String>());
-			if (!dwMap.containsKey(source)) dwMap.put(source, new HashSet<String>());
+			if (!upMap.containsKey(target)) upMap.put(target, new HashSet<>());
+			if (!dwMap.containsKey(source)) dwMap.put(source, new HashSet<>());
 			upMap.get(target).add(source);
 			dwMap.get(source).add(target);
 		}
 		else
 		{
-			if (!ppMap.containsKey(source)) ppMap.put(source, new HashSet<String>());
-			if (!ppMap.containsKey(target)) ppMap.put(target, new HashSet<String>());
+			if (!ppMap.containsKey(source)) ppMap.put(source, new HashSet<>());
+			if (!ppMap.containsKey(target)) ppMap.put(target, new HashSet<>());
 			ppMap.get(source).add(target);
 			ppMap.get(target).add(source);
 		}

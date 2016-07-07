@@ -2,6 +2,7 @@ package org.panda.utility;
 
 import org.panda.utility.statistics.Histogram;
 
+import java.text.DecimalFormat;
 import java.util.*;
 
 /**
@@ -15,11 +16,17 @@ public class TermCounter
 {
 	private Map<String, Item> termMap;
 	private int samples;
+	private Map<String, Integer> globalCounts;
 
 	public TermCounter()
 	{
 		termMap = new HashMap<String, Item>();
 		samples = 0;
+	}
+
+	public void setGlobalCounts(Map<String, Integer> globalCounts)
+	{
+		this.globalCounts = globalCounts;
 	}
 
 	public void addTerm(String term)
@@ -80,6 +87,8 @@ public class TermCounter
 		return toString(-1);
 	}
 
+	private static final DecimalFormat fmt = new DecimalFormat("0.000");
+
 	public String toString(int minCnt)
 	{
 		String s = "Total terms = " + termMap.size() + ", samples = " + samples + "\n";
@@ -90,7 +99,14 @@ public class TermCounter
 		{
 			if (item.count < minCnt) break;
 
-			s += item.toString() + "\n";
+			s += item.toString();
+
+			if (globalCounts != null && globalCounts.containsKey(item.term))
+			{
+				s += "\t" + fmt.format(item.count / (double) globalCounts.get(item.term));
+			}
+
+			s += "\n";
 		}
 
 		return s;

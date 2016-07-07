@@ -447,9 +447,9 @@ public class FileUtil
 	{
 //		printLines("/home/babur/Documents/TCGA/PanCan/mutation.maf", "MTOR\t");
 
-		exciseFileToLines("/home/babur/Documents/TCGA/PanCan/mutation.maf", "/home/babur/Documents/Temp/temp.txt",
-			line -> line.startsWith("Hugo_Symbol\t") ||
-				(line.startsWith("MTOR\t") && !line.contains("\tIntron\t") && !line.contains("\tSilent\t")));
+//		exciseFileToLines("/home/babur/Documents/TCGA/PanCan/mutation.maf", "/home/babur/Documents/Temp/temp.txt",
+//			line -> line.startsWith("Hugo_Symbol\t") ||
+//				(line.startsWith("MTOR\t") && !line.contains("\tIntron\t") && !line.contains("\tSilent\t")));
 //					&& line.contains("\tp.R766")));
 
 
@@ -461,6 +461,6 @@ public class FileUtil
 //		exciseFileToLines("/home/babur/Documents/TCGA/PanCan/mutation.maf", "/home/babur/Documents/Temp/SP3.maf",
 //			line -> query.stream().anyMatch(line::startsWith));
 
-//		countTermsInTabDelimitedColumn("/home/babur/Documents/TCGA/PanCan/mutation.maf", 8);
+		countTermsInTabDelimitedColumn("/home/babur/Downloads/trrust_rawdata.txt", 2);
 	}
 }

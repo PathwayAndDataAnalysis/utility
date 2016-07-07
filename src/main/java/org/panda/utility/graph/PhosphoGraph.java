@@ -35,4 +35,19 @@ public class PhosphoGraph extends Graph
 		}
 		return null;
 	}
+
+	public void addSite(String source, String target, String site)
+	{
+		if (!hasDirectedEdge(source, target))
+		{
+			throw new RuntimeException("Cannot add site because the edge does not exist.");
+		}
+
+		if (!sites.containsKey(source))
+			sites.put(source, new HashMap<>());
+		if (!sites.get(source).containsKey(target))
+			sites.get(source).put(target, new HashSet<>());
+
+		sites.get(source).get(target).add(site);
+	}
 }
