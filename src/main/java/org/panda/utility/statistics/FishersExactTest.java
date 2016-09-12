@@ -63,6 +63,10 @@ public class FishersExactTest
 		int featuredSelected)
 	{
 		assert selected <= size;
+		if (featuredSelected > selected)
+		{
+			System.out.println();
+		}
 		assert featuredSelected <= selected;
 		assert featuredSelected <= featuredOverall;
 
@@ -107,5 +111,28 @@ public class FishersExactTest
 	public static void main(String[] args)
 	{
 		System.out.println(calcEnrichmentPval(213, 61, 14, 44));
+	}
+
+	public static double calcCoocPval(boolean[] b1, boolean[] b2)
+	{
+		if (b1.length != b2.length) throw new IllegalArgumentException("Array lengths have to be equal.");
+
+		int a = 0;
+		int b = 0;
+		int c = 0;
+		int d = 0;
+
+		for (int i = 0; i < b1.length; i++)
+		{
+			if (b1[i])
+			{
+				if (b2[i]) d++;
+				else b++;
+			}
+			else if (b2[i]) c++;
+			else a++;
+		}
+
+		return calcPositiveDepPval(a, b, c, d);
 	}
 }

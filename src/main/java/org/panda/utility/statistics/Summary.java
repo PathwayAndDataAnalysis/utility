@@ -149,6 +149,16 @@ public class Summary
 		return sum(list) / list.size();
 	}
 
+	public static double geometricMeanOfDoubles(List<Double> list)
+	{
+		return Math.pow(multOfDoubles(list), 1D / list.size());
+	}
+
+	public static double multOfDoubles(List<Double> list)
+	{
+		return list.stream().reduce(1D, (v1, v2) -> v1 * v2);
+	}
+
 	public static double max(double... x)
 	{
 		if (x.length == 0) return Double.NaN;
@@ -186,7 +196,19 @@ public class Summary
 			if (max < v) max = v;
 		}
 		return max;
+	}
 
+	public static double maxDouble(Collection<Double> set)
+	{
+		if (set.isEmpty()) return Integer.MIN_VALUE;
+
+		double max = -Double.MAX_VALUE;
+
+		for (double v : set)
+		{
+			if (max < v) max = v;
+		}
+		return max;
 	}
 
 	public static int mult(int... x)
@@ -237,6 +259,19 @@ public class Summary
 		return min;
 	}
 
+	public static double minOfDoubleCollection(Collection<Double> x)
+	{
+		if (x.isEmpty()) return Double.NaN;
+
+		double min = Double.MAX_VALUE;
+
+		for (double v : x)
+		{
+			if (min > v) min = v;
+		}
+		return min;
+	}
+
 	public static int minButLast(int... x)
 	{
 		if (x.length == 0) return Integer.MAX_VALUE;
@@ -281,12 +316,32 @@ public class Summary
 		return Math.sqrt(variance(x));
 	}
 
+	public static double stdev(Double[] x)
+	{
+		return Math.sqrt(variance(x));
+	}
+
 	public static double stdev(double[] x, int[] ind)
 	{
 		return Math.sqrt(variance(x, ind));
 	}
 
 	public static double variance(double[] x)
+	{
+		double mean = Summary.mean(x);
+		double var = 0;
+
+		for (double v : x)
+		{
+			double term = v - mean;
+			var += term * term;
+		}
+
+		var /= x.length;
+		return var;
+	}
+
+	public static double variance(Double[] x)
 	{
 		double mean = Summary.mean(x);
 		double var = 0;
@@ -611,29 +666,30 @@ public class Summary
 
 	public static void main(String[] args)
 	{
-		Histogram h = new Histogram(0.05);
-		h.setBorderAtZero(true);
-		for (int j = 0; j <100000; j++)
-		{
-			List<Double> list1 = new ArrayList<Double>();
-
-			Random rand = new Random();
-
-			for (int i = 0; i < 1000; i++)
-			{
-				list1.add(rand.nextGaussian());
-			}
-
-			double[] vals1 = ArrayUtil.toArray(list1);
-
-			double mean = mean(vals1);
-
-			double p = calcPval(mean, stdev(vals1), vals1.length);
-
-			h.count(p);
-		}
-
-		h.printDensity();
+		System.out.println(geometricMeanOfDoubles(Arrays.asList(1.2, 1.1, 1.6)));
+//		Histogram h = new Histogram(0.05);
+//		h.setBorderAtZero(true);
+//		for (int j = 0; j <100000; j++)
+//		{
+//			List<Double> list1 = new ArrayList<Double>();
+//
+//			Random rand = new Random();
+//
+//			for (int i = 0; i < 1000; i++)
+//			{
+//				list1.add(rand.nextGaussian());
+//			}
+//
+//			double[] vals1 = ArrayUtil.toArray(list1);
+//
+//			double mean = mean(vals1);
+//
+//			double p = calcPval(mean, stdev(vals1), vals1.length);
+//
+//			h.count(p);
+//		}
+//
+//		h.printDensity();
 	}
 
 }

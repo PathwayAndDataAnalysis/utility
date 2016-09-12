@@ -5,10 +5,7 @@ import org.panda.utility.FileUtil;
 
 import java.io.*;
 import java.nio.file.Files;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 /**
  * Basic histogram implementation.
@@ -59,6 +56,14 @@ public class Histogram
 	}
 
 	public void countAll(double[] ns)
+	{
+		for (double n : ns)
+		{
+			count(n);
+		}
+	}
+
+	public void countAll(Collection<Double> ns)
 	{
 		for (double n : ns)
 		{

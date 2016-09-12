@@ -983,6 +983,69 @@ public class Graph implements Serializable
 		return dist;
 	}
 
+	/**
+	 * Provides a new graph that uses the same nodes, but connections are randomized.
+	 */
+	public Graph getRandomizedCopy(Set<String> withGenes)
+	{
+		Graph g = new Graph(name, edgeType);
+
+		if (!ppMap.isEmpty())
+		{
+			int edgeCnt = getEdgeCount(false);
+
+			List<String> genes = new ArrayList<>(withGenes != null ? withGenes : getSymbols(false));
+			Random rand = new Random();
+
+			for (int i = 0; i < edgeCnt; i++)
+			{
+				int ind1;
+				int ind2;
+				String g1;
+				String g2;
+
+				do
+				{
+					ind1 = rand.nextInt(genes.size());
+					ind2 = rand.nextInt(genes.size());
+					g1 = genes.get(ind1);
+					g2 = genes.get(ind2);
+				}
+				while (ind1 == ind2 || (g.ppMap.containsKey(g1) && g.ppMap.get(g1).contains(g2)));
+
+				g.putRelation(g1, g2, false);
+			}
+		}
+
+		if (!upMap.isEmpty())
+		{
+			int edgeCnt = getEdgeCount(true);
+
+			List<String> genes = new ArrayList<>(withGenes != null ? withGenes : getSymbols(true));
+			Random rand = new Random();
+
+			for (int i = 0; i < edgeCnt; i++)
+			{
+				int ind1;
+				int ind2;
+				String source;
+				String target;
+
+				do
+				{
+					ind1 = rand.nextInt(genes.size());
+					ind2 = rand.nextInt(genes.size());
+					source = genes.get(ind1);
+					target = genes.get(ind2);
+				}
+				while (ind1 == ind2 || g.hasDirectedEdge(source, target));
+
+				g.putRelation(source, target, true);
+			}
+		}
+		return g;
+	}
+
 	public static void main(String[] args) throws FileNotFoundException
 	{
 	}

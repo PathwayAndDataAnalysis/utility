@@ -10,6 +10,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import java.io.*;
 import java.nio.channels.FileChannel;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -336,6 +337,13 @@ public class FileUtil
 	}
 	catch (IOException e){throw new RuntimeException(e);}}
 
+	public static Set<String> getTermsInTabDelimitedColumn(String filename, int colIndex) { try
+	{
+		return Files.lines(Paths.get(filename)).skip(1).map(line -> line.split("\t")).filter(token -> token.length > colIndex)
+			.map(t -> t[colIndex]).collect(Collectors.toSet());
+	}
+	catch (IOException e){throw new RuntimeException(e);}}
+
 	//----- Section: XLSX related --------------------------------------------------------------------------------------
 
 	/**
@@ -442,6 +450,18 @@ public class FileUtil
 	}
 	catch (IOException e){throw new RuntimeException(e);}}
 
+	public static boolean sameFiles(String file1, String file2) throws FileNotFoundException
+	{
+		Scanner sc1 = new Scanner(new File(file1));
+		Scanner sc2 = new Scanner(new File(file2));
+
+		while (sc1.hasNextLine())
+		{
+			if (!sc2.hasNextLine()) return false;
+			if (!sc1.nextLine().equals(sc2.nextLine())) return false;
+		}
+		return true;
+	}
 
 	public static void main(String[] args) throws IOException
 	{
@@ -453,7 +473,7 @@ public class FileUtil
 //					&& line.contains("\tp.R766")));
 
 
-//		printLines("SIFWithLoc.sif", "controls-transport-of");
+		printLines("/home/babur/Documents/DARPA/BigMech/clustering/clustering-reach.owl", 426010, 426050);
 
 //		System.out.println(countLines("/home/babur/Documents/mutex/TCGA/PanCan/1/1/DataMatrix.txt"));
 
@@ -461,6 +481,8 @@ public class FileUtil
 //		exciseFileToLines("/home/babur/Documents/TCGA/PanCan/mutation.maf", "/home/babur/Documents/Temp/SP3.maf",
 //			line -> query.stream().anyMatch(line::startsWith));
 
-		countTermsInTabDelimitedColumn("/home/babur/Downloads/trrust_rawdata.txt", 2);
+//		countTermsInTabDelimitedColumn("/home/babur/Downloads/trrust_rawdata.txt", 2);
+
+//		System.out.println(sameFiles("/home/babur/Documents/mutex/TCGA/PanCan/1/1/DataMatrix.txt", "/home/babur/Documents/mutex/TCGA/PanCan-shuffled/1/1/DataMatrix.txt"));
 	}
 }

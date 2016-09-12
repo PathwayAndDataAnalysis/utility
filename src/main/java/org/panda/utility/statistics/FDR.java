@@ -25,8 +25,7 @@ public class FDR
 
 		Collections.sort(keys, (o1, o2) -> results.get(o1).compareTo(results.get(o2)));
 
-		int ranIndex = 0;
-		double ranPv = 0;
+		int ranIndex = -1;
 		int maxIndex = -1;
 
 		for (int i = 0; i < keys.size(); i++)
@@ -34,18 +33,50 @@ public class FDR
 			T key = keys.get(i);
 			double pval = results.get(key);
 
-			while(ranPv <= pval && ranIndex < randomized.size())
+			while(ranIndex < randomized.size() - 1 && randomized.get(ranIndex + 1) <= pval)
 			{
-				ranPv = randomized.get(ranIndex++);
+				ranIndex++;
 			}
 
-			double noise = (ranIndex - 1) / (double) randMultiplier;
+			double noise = (ranIndex + 1) / (double) randMultiplier;
 
 			if (noise / (i+1) <= fdrThr) maxIndex = i;
 		}
 
 		if (maxIndex < 0) return Collections.emptyList();
 		else return new ArrayList<>(keys.subList(0, maxIndex+1));
+	}
+
+	public static <T> Map<T, Double> getQVals(final Map<T, Double> results, List<Double> randomized, int randMultiplier)
+	{
+		if (results.isEmpty()) return Collections.emptyMap();
+
+		Collections.sort(randomized);
+
+		List<T> keys = new ArrayList<>(results.keySet());
+
+		Collections.sort(keys, (o1, o2) -> results.get(o1).compareTo(results.get(o2)));
+
+		int ranIndex = -1;
+		Map<T, Double> qvals = new HashMap<>();
+
+		for (int i = 0; i < keys.size(); i++)
+		{
+			T key = keys.get(i);
+			double pval = results.get(key);
+
+			while(ranIndex < randomized.size() - 1 && randomized.get(ranIndex + 1) <= pval)
+			{
+				ranIndex++;
+			}
+
+			double noise = (ranIndex + 1) / (double) randMultiplier;
+
+			double fdr = noise / (i+1);
+			qvals.put(key, fdr);
+		}
+
+		return qvals;
 	}
 
 	/**
