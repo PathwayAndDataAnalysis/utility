@@ -354,4 +354,38 @@ public class ArrayUtil
 		}
 		return n;
 	}
+
+	public static void shuffle(boolean[] b, Random r)
+	{
+		int ind;
+		for (int i = b.length - 1; i > 0; i--)
+		{
+			ind = r.nextInt(i + 1);
+			if (b[ind] != b[i])
+			{
+				b[ind] = b[i];
+				b[i] = !b[i];
+			}
+		}
+	}
+
+	public static boolean isUniform(boolean[] b)
+	{
+		if (b.length < 2) return true;
+		for (int i = 1; i < b.length; i++)
+		{
+			if (b[i] != b[0]) return false;
+		}
+		return true;
+	}
+
+	public static int[] convertToBasicIntArray(List<Integer> list)
+	{
+		int[] arr = new int[list.size()];
+		for (int i = 0; i < arr.length; i++)
+		{
+			arr[i] = list.get(i);
+		}
+		return arr;
+	}
 }

@@ -730,6 +730,8 @@ public class Graph implements Serializable
 
 			System.out.println("Directed graph: " + syms.size() + " genes (source: " +
 				dwMap.keySet().size() + ", target: " + upMap.keySet().size() + ") and " + edgeCnt + " edges");
+
+			System.out.println(dwMap.keySet());
 		}
 	}
 
