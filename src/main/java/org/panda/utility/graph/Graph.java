@@ -878,8 +878,8 @@ public class Graph implements Serializable
 		return result;
 	}
 
-	public List<Object> getEnrichedGenes(Set<String> query, Set<String> background, double fdrThr,
-		NeighborType type, int distance)
+	public List<String> getEnrichedGenes(Set<String> query, Set<String> background, double fdrThr,
+		NeighborType type, int distance, int minMember)
 	{
 		Graph graph = this;
 
@@ -897,16 +897,19 @@ public class Graph implements Serializable
 
 		int qSize = query.size();
 
-		Map<Object, Double> pvals = new HashMap<>();
-		Map<Object, Double> limit = new HashMap<>();
+		Map<String, Double> pvals = new HashMap<>();
+		Map<String, Double> limit = new HashMap<>();
 
 		for (String gene : background)
 		{
 			Set<String> neighbors = type == NeighborType.UPSTREAM ? graph.getUpstream(gene, distance) :
 				type == NeighborType.DOWNSTREAM ? graph.getDownstream(gene, distance) :
 					graph.getBothstream(gene, distance);
+
+			if (neighbors.size() < minMember) continue;
+
 			neighbors = new HashSet<>(neighbors);
-			neighbors.add(gene);
+//			neighbors.add(gene);
 			int nSize = neighbors.size();
 
 			neighbors.retainAll(query);
