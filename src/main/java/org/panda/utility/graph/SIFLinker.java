@@ -4,6 +4,9 @@ import java.io.*;
 import java.util.*;
 
 /**
+ * This is class is a temporary solution to using more than one Graph in a query, and not losing the edge types in the
+ * results. Ultimately the functionality here should be transferred to GraphList.
+ *
  * @author Ozgun Babur
  */
 public class SIFLinker

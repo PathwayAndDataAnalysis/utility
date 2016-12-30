@@ -11,7 +11,7 @@ public class Frequency
 
 	public Frequency()
 	{
-		cnt = new HashMap<Comparable, Integer>();
+		cnt = new HashMap<>();
 	}
 
 	public void count(Comparable o)

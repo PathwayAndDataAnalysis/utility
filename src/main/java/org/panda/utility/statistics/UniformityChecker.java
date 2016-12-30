@@ -4,7 +4,8 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Created by babur on 4/18/16.
+ * Prints a table that can be used to generate a plot for visualizing how the given p-values are different than a
+ * uniform distribution. The method is more accurate when there are a lot of p-values.
  */
 public class UniformityChecker
 {

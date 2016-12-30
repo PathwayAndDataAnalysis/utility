@@ -8,7 +8,7 @@ import java.nio.file.Paths;
 import java.util.*;
 
 /**
- * This is a set graphs.
+ * This is a set of graphs.
  *
  * @author Ozgun Babur
  */

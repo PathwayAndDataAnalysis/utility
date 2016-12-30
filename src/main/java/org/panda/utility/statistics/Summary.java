@@ -1,10 +1,10 @@
 package org.panda.utility.statistics;
 
-import org.panda.utility.ArrayUtil;
-
 import java.util.*;
 
 /**
+ * This class is a bag of simple statistical methods, like mean, median, etc.
+ *
  * @author Ozgun Babur
  */
 public class Summary
@@ -328,7 +328,7 @@ public class Summary
 
 	public static double variance(double[] x)
 	{
-		double mean = Summary.mean(x);
+		double mean = mean(x);
 		double var = 0;
 
 		for (double v : x)
@@ -343,7 +343,7 @@ public class Summary
 
 	public static double variance(Double[] x)
 	{
-		double mean = Summary.mean(x);
+		double mean = mean(x);
 		double var = 0;
 
 		for (double v : x)

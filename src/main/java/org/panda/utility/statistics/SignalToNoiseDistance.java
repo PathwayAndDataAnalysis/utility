@@ -5,10 +5,15 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * Experimental class to asses how a signal is separated from the noise.
+ *
  * @author Ozgun Babur
  */
 public class SignalToNoiseDistance
 {
+	/**
+	 * Returns the difference between means after a -log transformation of signal and noise p-values.
+	 */
 	public static <T> double calculate(Map<T, Double> pvalsSignal, Map<T, Double> pvalsNoise)
 	{
 		List<Double> signal = new ArrayList<>(pvalsSignal.values().size());

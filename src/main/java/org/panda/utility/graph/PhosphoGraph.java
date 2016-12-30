@@ -3,6 +3,8 @@ package org.panda.utility.graph;
 import java.util.*;
 
 /**
+ * Extension of Graph where the affected phospho sites of relations are also kept.
+ *
  * @author Ozgun Babur
  */
 public class PhosphoGraph extends Graph
