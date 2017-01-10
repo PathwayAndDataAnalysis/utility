@@ -473,7 +473,7 @@ public class FileUtil
 //					&& line.contains("\tp.R766")));
 
 
-		printLines("/home/babur/Documents/DARPA/BigMech/clustering/clustering-reach.owl", 426010, 426050);
+		printLines("/home/babur/Documents/expO/GSE2109_series_matrix.txt", 100, 200);
 
 //		System.out.println(countLines("/home/babur/Documents/mutex/TCGA/PanCan/1/1/DataMatrix.txt"));
 
