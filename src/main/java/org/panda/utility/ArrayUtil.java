@@ -25,6 +25,21 @@ public class ArrayUtil
 		return s / c;
 	}
 
+	public static double mean(Double[] v)
+	{
+		double s = 0;
+		int c = 0;
+		for (Double aV : v)
+		{
+			if (!Double.isNaN(aV))
+			{
+				s += aV;
+				c++;
+			}
+		}
+		return s / c;
+	}
+
 	public static double geometricMean(double[] v)
 	{
 		double s = 1;

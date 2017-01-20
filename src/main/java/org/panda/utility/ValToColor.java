@@ -33,6 +33,12 @@ public class ValToColor
 		return c.getRed() + " " + c.getGreen() + " " + c.getBlue();
 	}
 
+	public String getColorInJSONString(double v)
+	{
+		Color c = getColor(v);
+		return "rgb(" + c.getRed() + "," + c.getGreen() + "," + c.getBlue() + ")";
+	}
+
 	public Color getColor(double v)
 	{
 		if (v <= keyValues[0]) return keyColors[0];
