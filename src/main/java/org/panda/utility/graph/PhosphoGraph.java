@@ -31,11 +31,16 @@ public class PhosphoGraph extends Graph
 
 	public Set<String> getSites(String source, String target)
 	{
-		if (sites.containsKey(source) && sites.get(source).containsKey(target))
+		if (hasSites(source, target))
 		{
 			return sites.get(source).get(target);
 		}
 		return null;
+	}
+
+	public boolean hasSites(String source, String target)
+	{
+		return sites.containsKey(source) && sites.get(source).containsKey(target);
 	}
 
 	public void addSite(String source, String target, String site)

@@ -14,6 +14,8 @@ public class ChiSquare
 {
 	public static double testDependence(long[][] cnts)
 	{
+		if (cnts.length < 2 || cnts[0].length < 2) return 1;
+
 		ChiSquareTest cst = new ChiSquareTest();
 		return cst.chiSquareTest(cnts);
 	}

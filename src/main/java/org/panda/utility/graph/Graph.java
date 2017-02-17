@@ -223,6 +223,20 @@ public class Graph implements Serializable
 		}
 	}
 
+	public void removeRelation(String source, String target, boolean directed)
+	{
+		if (directed)
+		{
+			if (upMap.containsKey(target)) upMap.get(target).remove(source);
+			if (dwMap.containsKey(source)) dwMap.get(source).remove(target);
+		}
+		else
+		{
+			if (ppMap.containsKey(source)) ppMap.get(source).remove(target);
+			if (ppMap.containsKey(target)) ppMap.get(target).remove(source);
+		}
+	}
+
 	public boolean isDirected()
 	{
 		return !upMap.isEmpty();

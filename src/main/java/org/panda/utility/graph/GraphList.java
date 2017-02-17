@@ -222,6 +222,15 @@ public class GraphList extends Graph
 		}
 	}
 
+	@Override
+	public void removeRelation(String source, String target, boolean directed)
+	{
+		for (Graph graph : graphs)
+		{
+			graph.removeRelation(source, target, directed);
+		}
+	}
+
 	public static void main(String[] args)
 	{
 

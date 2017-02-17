@@ -240,7 +240,7 @@ public class ArrayUtil
 
 		for (int i = 0; i < c.length; i++)
 		{
-			if (control[i] || test[i])
+			if (c[i] != ABSENT_INT && (control[i] || test[i]))
 			{
 				t[test[i] ? 1 : 0][list.indexOf(c[i])]++;
 			}
