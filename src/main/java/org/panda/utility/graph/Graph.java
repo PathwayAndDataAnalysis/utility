@@ -195,12 +195,28 @@ public class Graph implements Serializable
 	{
 		putRelation(source, target, directed);
 
-		if (!mediators.containsKey(source))
-			mediators.put(source, new HashMap<>());
-		if (!mediators.get(source).containsKey(target))
-			mediators.get(source).put(target, new HashSet<>());
+		List<String> meds = Arrays.asList(mediatorsStr.split(" |;"));
+		addMediators(source, target, meds);
 
-		mediators.get(source).get(target).addAll(Arrays.asList(mediatorsStr.split(" |;")));
+		if (!directed)
+		{
+			addMediators(target, source, meds);
+		}
+	}
+
+	private void addMediators(String source, String target, List<String> meds)
+	{
+		if (!mediators.containsKey(source))
+		{
+			mediators.put(source, new HashMap<>());
+		}
+
+		if (!mediators.get(source).containsKey(target))
+		{
+			mediators.get(source).put(target, new HashSet<>());
+		}
+
+		mediators.get(source).get(target).addAll(meds);
 	}
 
 	public void putRelation(String source, String target, boolean directed)
