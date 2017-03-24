@@ -158,22 +158,27 @@ public class Graph implements Serializable
 
 	public String getMediatorsInString(String source, String target)
 	{
-		String s = "";
+		return convertMediatorsToString(getMediators(source, target));
+	}
+
+	public Set<String> getMediators(String source, String target)
+	{
+		Set<String> set = new HashSet<>();
 		if (mediators.containsKey(source) && mediators.get(source).containsKey(target))
 		{
-			s += convertMediatorsToString(mediators.get(source).get(target));
+			set.addAll(mediators.get(source).get(target));
 		}
 		if (this.isUndirected())
 		{
 			if (mediators.containsKey(target) && mediators.get(target).containsKey(source))
 			{
-				s += " " + convertMediatorsToString(mediators.get(target).get(source));
+				set.addAll(mediators.get(target).get(source));
 			}
 		}
-		return s.trim();
+		return set;
 	}
 
-	private String convertMediatorsToString(Set<String> set)
+	protected String convertMediatorsToString(Set<String> set)
 	{
 		StringBuilder sb = new StringBuilder();
 		for (String s : set)
@@ -401,6 +406,28 @@ public class Graph implements Serializable
 		for (int i = 0; i < depth; i++)
 		{
 			newSet = upstream ? getUpstream(newSet) : getDownstream(newSet);
+			newSet.removeAll(result);
+			result.addAll(newSet);
+		}
+
+		return result;
+	}
+
+	private Set<String> getNeighbors(String gene, int depth)
+	{
+		return getNeighbors(Collections.singleton(gene), depth);
+	}
+
+	private Set<String> getNeighbors(Set<String> genes, int depth)
+	{
+		if (depth < 1) return new HashSet<>();
+
+		Set<String> newSet = new HashSet<>(genes);
+		Set<String> result = new HashSet<>();
+
+		for (int i = 0; i < depth; i++)
+		{
+			newSet = getNeighbors(newSet);
 			newSet.removeAll(result);
 			result.addAll(newSet);
 		}
@@ -770,6 +797,7 @@ public class Graph implements Serializable
 		merge(this.ppMap, graph.ppMap);
 		merge(this.upMap, graph.upMap);
 		merge(this.dwMap, graph.dwMap);
+
 		for (String gene : graph.mediators.keySet())
 		{
 			if (!mediators.containsKey(gene))
@@ -779,7 +807,7 @@ public class Graph implements Serializable
 		}
 	}
 
-	private void merge(Map<String, Set<String>> m1, Map<String, Set<String>> m2)
+	protected void merge(Map<String, Set<String>> m1, Map<String, Set<String>> m2)
 	{
 		for (String s : m2.keySet())
 		{
@@ -911,6 +939,18 @@ public class Graph implements Serializable
 	public List<String> getEnrichedGenes(Set<String> query, Set<String> background, double fdrThr,
 		NeighborType type, int distance, int minMember)
 	{
+		Map<String, Double>[] scores = getEnrichmentScores(query, background, type, distance, minMember);
+		if (fdrThr < 0)
+		{
+			fdrThr = FDR.decideBestFDR_BH(scores[0], scores[1]);
+			System.out.println("fdrThr = " + fdrThr);
+		}
+		return FDR.select(scores[0], scores[1], fdrThr);
+	}
+
+	public Map<String, Double>[] getEnrichmentScores(Set<String> query, Set<String> background, NeighborType type,
+		int distance, int minMember)
+	{
 		Graph graph = this;
 
 		if (background != null)
@@ -934,12 +974,13 @@ public class Graph implements Serializable
 		{
 			Set<String> neighbors = type == NeighborType.UPSTREAM ? graph.getUpstream(gene, distance) :
 				type == NeighborType.DOWNSTREAM ? graph.getDownstream(gene, distance) :
-					graph.getBothstream(gene, distance);
+					type == NeighborType.BOTHSTREAM ? graph.getBothstream(gene, distance) :
+						graph.getNeighbors(gene, distance);
 
 			if (neighbors.size() < minMember) continue;
 
 			neighbors = new HashSet<>(neighbors);
-//			neighbors.add(gene);
+			neighbors.add(gene);
 			int nSize = neighbors.size();
 
 			neighbors.retainAll(query);
@@ -950,19 +991,15 @@ public class Graph implements Serializable
 				Math.min(qSize, nSize)));
 		}
 
-		if (fdrThr < 0)
-		{
-			fdrThr = FDR.decideBestFDR_BH(pvals, limit);
-			System.out.println("fdrThr = " + fdrThr);
-		}
-		return FDR.select(pvals, limit, fdrThr);
+		return new Map[]{pvals, limit};
 	}
 
 	public enum NeighborType
 	{
 		UPSTREAM,
 		DOWNSTREAM,
-		BOTHSTREAM
+		BOTHSTREAM,
+		UNDIRECTED
 	}
 
 	public void printDegreeDistribution(int bins)

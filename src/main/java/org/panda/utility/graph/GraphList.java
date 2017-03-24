@@ -231,6 +231,22 @@ public class GraphList extends Graph
 		}
 	}
 
+	public String getMediatorsInString(String seed, Set<String> neighbors)
+	{
+		Set<String> meds = new HashSet<>();
+
+		for (Graph graph : graphs)
+		{
+			for (String neighbor : neighbors)
+			{
+				meds.addAll(graph.getMediators(seed, neighbor));
+				meds.addAll(graph.getMediators(neighbor, seed));
+			}
+		}
+
+		return convertMediatorsToString(meds);
+	}
+
 	public static void main(String[] args)
 	{
 

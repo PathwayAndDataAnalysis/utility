@@ -57,4 +57,23 @@ public class PhosphoGraph extends Graph
 
 		sites.get(source).get(target).add(site);
 	}
+
+	@Override
+	public void merge(Graph graph)
+	{
+		super.merge(graph);
+
+		if (graph instanceof PhosphoGraph)
+		{
+			PhosphoGraph pGraph = (PhosphoGraph) graph;
+
+			for (String gene : pGraph.sites.keySet())
+			{
+				if (!sites.containsKey(gene))
+					sites.put(gene, new HashMap<>());
+
+				merge(sites.get(gene), pGraph.sites.get(gene));
+			}
+		}
+	}
 }
