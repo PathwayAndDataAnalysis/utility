@@ -12,7 +12,7 @@ import java.util.*;
 public class SIFLinker
 {
 	protected Map<String, Map<String, Set<String>>> sif;
-	public Graph graph;
+	public DirectedGraph graph;
 	
 	public boolean load(String filename)
 	{
@@ -27,9 +27,9 @@ public class SIFLinker
 		}
 	}
 	
-	public boolean load(Graph g)
+	public boolean load(DirectedGraph g)
 	{
-		if (graph == null) graph = new Graph();
+		if (graph == null) graph = new DirectedGraph();
 		graph.merge(g);
 
 		if (sif == null) sif = new HashMap<>();
@@ -56,9 +56,8 @@ public class SIFLinker
 		{
 			byte[] content = getBytes(is);
 
-			if (graph == null) graph = new Graph();
-			graph.load(new ByteArrayInputStream(content), new HashSet<String>(),
-				new HashSet<String>(Arrays.asList(directedTypes)));
+			if (graph == null) graph = new DirectedGraph();
+			graph.load(new ByteArrayInputStream(content), new HashSet<String>(Arrays.asList(directedTypes)));
 
 			if (sif == null) sif = new HashMap<String, Map<String, Set<String>>>();
 	
@@ -176,14 +175,14 @@ public class SIFLinker
 	{
 		List<String> rels = new ArrayList<String>();
 
-		List<Graph.CommPoint> points = graph.getCommonDownstream(seed, limit);
+		List<DirectedGraph.CommPoint> points = graph.getCommonDownstream(seed, limit);
 		
-		Set<Graph.CommPoint> select = new HashSet<Graph.CommPoint>();
+		Set<DirectedGraph.CommPoint> select = new HashSet<DirectedGraph.CommPoint>();
 		Set<String> covered = new HashSet<String>();
 
 //		while(covered.size() < seed.size())
 		{
-			for (Graph.CommPoint p : points)
+			for (DirectedGraph.CommPoint p : points)
 			{
 //				if (!covered.containsAll(p.upstr))
 				{
@@ -194,7 +193,7 @@ public class SIFLinker
 		}
 
 
-		for (Graph.CommPoint p : select)
+		for (DirectedGraph.CommPoint p : select)
 		{
 			List<String> link = linkProgressive(p.upstr, Collections.singleton(p.s), p.dist);
 			for (String l : link)

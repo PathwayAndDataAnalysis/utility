@@ -1,5 +1,6 @@
 package org.panda.utility.graph.query;
 
+import org.panda.utility.graph.DirectedGraph;
 import org.panda.utility.graph.Graph;
 import org.panda.utility.graph.GraphList;
 
@@ -31,11 +32,14 @@ public class QueryGraph
 
 		for (Graph graph : graphs)
 		{
-			for (String sourceID : graph.getOneSideSymbols(true))
+			if (graph.isDirected())
 			{
-				for (String targetID : graph.getDownstream(sourceID))
+				for (String sourceID : ((DirectedGraph) graph).getOneSideSymbols(true))
 				{
-					addEdge(new QueryEdge(getNode(sourceID), getNode(targetID), graph.getEdgeType()));
+					for (String targetID : ((DirectedGraph) graph).getDownstream(sourceID))
+					{
+						addEdge(new QueryEdge(getNode(sourceID), getNode(targetID), graph.getEdgeType()));
+					}
 				}
 			}
 		}

@@ -3,8 +3,6 @@ package org.panda.utility.graph;
 import org.panda.utility.graph.query.QueryGraphObject;
 
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.*;
 
 /**
@@ -23,9 +21,6 @@ public class GraphList extends Graph
 		super(name, null);
 		graphs = new ArrayList<>();
 		type2graph = new HashMap<>();
-		super.ppMap = null;
-		super.dwMap = null;
-		super.upMap = null;
 		super.mediators = null;
 	}
 
@@ -53,6 +48,12 @@ public class GraphList extends Graph
 		}
 	}
 
+	@Override
+	public void putRelation(String source, String target)
+	{
+		throw new RuntimeException("Cannot put a relation to a graph list.");
+	}
+
 	public boolean isDirected()
 	{
 		for (Graph graph : graphs)
@@ -76,7 +77,7 @@ public class GraphList extends Graph
 		Set<String> result = new HashSet<>();
 		for (Graph graph : graphs)
 		{
-			result.addAll(graph.goBFS(seed, downstream ? graph.dwMap : graph.upMap));
+			result.addAll(((DirectedGraph) graph).goBFS(seed, downstream));
 		}
 		return result;
 	}
@@ -86,7 +87,7 @@ public class GraphList extends Graph
 		Set<String> result = new HashSet<>();
 		for (Graph graph : graphs)
 		{
-			result.addAll(graph.goBFS(seed, visited, downstream ? graph.dwMap : graph.upMap));
+			result.addAll(((DirectedGraph) graph).goBFS(seed, visited, downstream));
 		}
 		return result;
 	}
@@ -96,7 +97,7 @@ public class GraphList extends Graph
 		Set<String> result = new HashSet<>();
 		for (Graph graph : graphs)
 		{
-			result.addAll(graph.goBFS(seed, visited, graph.ppMap));
+			result.addAll(graph.goBFS(seed, visited));
 		}
 		return result;
 	}
@@ -106,7 +107,7 @@ public class GraphList extends Graph
 		Set<String> result = new HashSet<>();
 		for (Graph graph : graphs)
 		{
-			result.addAll(graph.getUpstream(gene));
+			result.addAll(((DirectedGraph) graph).getUpstream(gene));
 		}
 		return result;
 	}
@@ -116,7 +117,7 @@ public class GraphList extends Graph
 		Set<String> result = new HashSet<>();
 		for (Graph graph : graphs)
 		{
-			result.addAll(graph.getDownstream(gene));
+			result.addAll(((DirectedGraph) graph).getDownstream(gene));
 		}
 		return result;
 	}
@@ -131,15 +132,32 @@ public class GraphList extends Graph
 		return result;
 	}
 
-	public Set<String> getSymbols(boolean directed)
+	public Set<String> getSymbols()
 	{
 		Set<String> syms = new HashSet<>();
 
 		for (Graph graph : graphs)
 		{
-			syms.addAll(graph.getSymbols(directed));
+			syms.addAll(graph.getSymbols());
 		}
 		return syms;
+	}
+
+	@Override
+	public Map<Integer, Integer> getDegreeDistibution()
+	{
+		throw new UnsupportedOperationException("Dgree distribution is not supported for graph lists");
+	}
+
+	@Override
+	public int getEdgeCount()
+	{
+		int cnt = 0;
+		for (Graph graph : graphs)
+		{
+			cnt += graph.getEdgeCount();
+		}
+		return cnt;
 	}
 
 	public void printStats()
@@ -164,21 +182,12 @@ public class GraphList extends Graph
 		return copy;
 	}
 
-	public GraphList changeTo(boolean directed)
-	{
-		for (Graph graph : graphs)
-		{
-			graph.changeTo(directed);
-		}
-		return this;
-	}
-
 	public Set<String> getOneSideSymbols(boolean source)
 	{
 		Set<String> syms = new HashSet<>();
 		for (Graph graph : graphs)
 		{
-			syms.addAll(source ? graph.dwMap.keySet() : graph.upMap.keySet());
+			syms.addAll(((DirectedGraph) graph).getOneSideSymbols(source));
 		}
 		return syms;
 	}
@@ -192,15 +201,21 @@ public class GraphList extends Graph
 		}
 	}
 
-	protected Set<String> getRelationStrings(boolean directed)
+	protected Set<String> getRelationStrings()
 	{
 		Set<String> set = new HashSet<String>();
 
 		for (Graph graph : graphs)
 		{
-			set.addAll(graph.getRelationStrings(directed));
+			set.addAll(graph.getRelationStrings());
 		}
 		return set;
+	}
+
+	@Override
+	public Graph getRandomizedCopy(Set<String> withGenes)
+	{
+		throw new UnsupportedOperationException("Cannot generate randomized copy of a graph list.");
 	}
 
 	public Set<String> toString(Set<String> from, Set<String> to)
@@ -208,7 +223,7 @@ public class GraphList extends Graph
 		Set<String> result = new HashSet<String>();
 		for (Graph graph : graphs)
 		{
-			result.addAll(graph.toString(from, to));
+			result.addAll(((DirectedGraph) graph).toString(from, to));
 		}
 		return result;
 	}
@@ -223,11 +238,11 @@ public class GraphList extends Graph
 	}
 
 	@Override
-	public void removeRelation(String source, String target, boolean directed)
+	public void removeRelation(String source, String target)
 	{
 		for (Graph graph : graphs)
 		{
-			graph.removeRelation(source, target, directed);
+			graph.removeRelation(source, target);
 		}
 	}
 

@@ -7,7 +7,7 @@ import java.util.*;
  *
  * @author Ozgun Babur
  */
-public class PhosphoGraph extends Graph
+public class PhosphoGraph extends DirectedGraph
 {
 	protected Map<String, Map<String, Set<String>>> sites;
 
@@ -17,9 +17,9 @@ public class PhosphoGraph extends Graph
 		this.sites = new HashMap<>();
 	}
 
-	public void putRelation(String source, String target, String mediatorsStr, boolean directed, String siteString)
+	public void putRelation(String source, String target, String mediatorsStr, String siteString)
 	{
-		super.putRelation(source, target, mediatorsStr, directed);
+		super.putRelation(source, target, mediatorsStr);
 
 		if (!sites.containsKey(source))
 			sites.put(source, new HashMap<>());
@@ -45,7 +45,7 @@ public class PhosphoGraph extends Graph
 
 	public void addSite(String source, String target, String site)
 	{
-		if (!hasDirectedEdge(source, target))
+		if (!hasRelation(source, target))
 		{
 			throw new RuntimeException("Cannot add site because the edge does not exist.");
 		}

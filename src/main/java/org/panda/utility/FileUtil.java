@@ -473,7 +473,7 @@ public class FileUtil
 //					&& line.contains("\tp.R766")));
 
 
-		printLines("/home/babur/Documents/expO/GSE2109_series_matrix.txt", 100, 200);
+		printLines("/home/babur/Documents/Temp/SignedREACH.sif", "CSK\tphosphorylates\tSRC\t");
 
 //		System.out.println(countLines("/home/babur/Documents/mutex/TCGA/PanCan/1/1/DataMatrix.txt"));
 
