@@ -473,7 +473,8 @@ public class FileUtil
 //					&& line.contains("\tp.R766")));
 
 
-		printLines("/home/babur/Documents/Temp/SignedREACH.sif", "CSK\tphosphorylates\tSRC\t");
+//		System.out.println(countLines("/home/babur/Projects/utility/PNNL-ovarian-correlations.txt"));
+		printLines("/home/babur/Projects/utility/PNNL-ovarian-correlations.txt", 1, 10000);
 
 //		System.out.println(countLines("/home/babur/Documents/mutex/TCGA/PanCan/1/1/DataMatrix.txt"));
 

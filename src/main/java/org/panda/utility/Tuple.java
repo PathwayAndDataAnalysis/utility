@@ -22,4 +22,10 @@ public class Tuple
 		this.v = v;
 		this.p = p;
 	}
+
+	@Override
+	public String toString()
+	{
+		return "v = " + v + ", p = " + p;
+	}
 }
