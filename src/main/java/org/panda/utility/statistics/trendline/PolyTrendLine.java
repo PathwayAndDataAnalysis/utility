@@ -1,5 +1,7 @@
 package org.panda.utility.statistics.trendline;
 
+import java.util.Arrays;
+
 /**
  * http://stackoverflow.com/questions/17592139/trend-lines-regression-curve-fitting-java-library
  */
@@ -20,4 +22,17 @@ public class PolyTrendLine extends OLSTrendLine {
 	}
 	@Override
 	protected boolean logY() {return false;}
+
+	public double[] getCoefficients()
+	{
+		return coef.getColumn(0);
+	}
+
+	public static void main(String[] args)
+	{
+		PolyTrendLine tl = new PolyTrendLine(1);
+		tl.setValues(new double[]{5,7,9,11,13,15}, new double[]{2,3,4,5,6,7});
+		System.out.println("tl.predict(20) = " + tl.predict(20));
+		System.out.println(Arrays.toString(tl.getCoefficients()));
+	}
 }

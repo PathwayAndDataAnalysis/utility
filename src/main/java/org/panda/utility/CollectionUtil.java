@@ -36,6 +36,18 @@ public class CollectionUtil
 		return (int) col1.stream().filter(col2::contains).count();
 	}
 
+	public static <T extends Comparable> void printVennSets(Collection<T> col1, Collection<T> col2, Map<T, T> mapFrom2To1)
+	{
+		Set<T> set2 = new HashSet<>();
+		for (T t : col2)
+		{
+			if (mapFrom2To1.containsKey(t)) set2.add(mapFrom2To1.get(t));
+			else set2.add(t);
+		}
+
+		printVennSets(col1, set2);
+	}
+
 	public static <T extends Comparable> void printVennSets(Collection<T>... col)
 	{
 		int[] cnt = getVennCounts(col);
