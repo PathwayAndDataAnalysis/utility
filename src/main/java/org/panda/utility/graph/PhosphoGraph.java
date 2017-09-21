@@ -1,5 +1,9 @@
 package org.panda.utility.graph;
 
+import org.panda.utility.CollectionUtil;
+
+import java.io.IOException;
+import java.io.Writer;
 import java.util.*;
 
 /**
@@ -59,7 +63,7 @@ public class PhosphoGraph extends DirectedGraph
 	}
 
 	@Override
-	public void merge(Graph graph)
+	public void merge(DirectedGraph graph)
 	{
 		super.merge(graph);
 
@@ -74,6 +78,40 @@ public class PhosphoGraph extends DirectedGraph
 
 				merge(sites.get(gene), pGraph.sites.get(gene));
 			}
+		}
+	}
+
+	@Override
+	public void write(Writer writer)
+	{
+		try
+		{
+			for (String source : dwMap.keySet())
+			{
+				for (String target : dwMap.get(source))
+				{
+					writer.write(source + "\t" + getEdgeType() + "\t" + target + "\t");
+
+					if (mediators.containsKey(source) && mediators.get(source).containsKey(target))
+					{
+						writer.write(convertMediatorsToString(mediators.get(source).get(target)));
+					}
+
+					writer.write("\t");
+
+					Set<String> sites = getSites(source, target);
+					if (sites != null)
+					{
+						writer.write(CollectionUtil.merge(sites, ";"));
+					}
+
+					writer.write("\n");
+				}
+			}
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
 		}
 	}
 }

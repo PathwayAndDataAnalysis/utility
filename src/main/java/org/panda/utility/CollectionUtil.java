@@ -240,10 +240,20 @@ public class CollectionUtil
 
 	public static <T> Set<T> getIntersection(Collection<T>... col)
 	{
-		Set<T> set = new HashSet<T>(col[0]);
+		Set<T> set = new HashSet<>(col[0]);
 		for (int i = 1; i < col.length; i++)
 		{
 			set.retainAll(col[i]);
+		}
+		return set;
+	}
+
+	public static <T> Set<T> getUnion(Collection<T>... col)
+	{
+		Set<T> set = new HashSet<>();
+		for (Collection<T> aCol : col)
+		{
+			set.addAll(aCol);
 		}
 		return set;
 	}

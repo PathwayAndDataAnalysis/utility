@@ -63,10 +63,6 @@ public class FishersExactTest
 		int featuredSelected)
 	{
 		assert selected <= size;
-		if (featuredSelected > selected)
-		{
-			System.out.println();
-		}
 		assert featuredSelected <= selected;
 		assert featuredSelected <= featuredOverall;
 

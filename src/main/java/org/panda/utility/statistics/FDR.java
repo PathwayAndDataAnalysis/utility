@@ -237,6 +237,23 @@ public class FDR
 		return qvals;
 	}
 
+	public static <T> double getPValueThreshold(final Map<T, Double> results,
+		Map<T, Double> limits, double fdrThr)
+	{
+		Map<T, Double> qvals = getQVals(results, limits);
+
+		double maxP = 0;
+		for (T t : results.keySet())
+		{
+			double p = results.get(t);
+			double q = qvals.get(t);
+
+			if (p > maxP && q <= fdrThr) maxP = p;
+		}
+
+		return maxP;
+	}
+
 	public static <T> int[] getResultSizesUsingPolyCurve(final Map<T, Double> results, double[] thrs)
 	{
 		int[] sizes = new int[thrs.length];

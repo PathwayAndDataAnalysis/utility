@@ -474,7 +474,8 @@ public class FileUtil
 
 
 //		System.out.println(countLines("/home/babur/Projects/utility/PNNL-ovarian-correlations.txt"));
-		printLines("/home/babur/Projects/utility/PNNL-ovarian-correlations.txt", 1, 10000);
+//		printLines("/home/babur/Documents/PC/temp.owl", 200, 300);
+		printLines("/home/babur/Projects/repo/resource-files/iPTMNet.txt", "DNM1L");
 
 //		System.out.println(countLines("/home/babur/Documents/mutex/TCGA/PanCan/1/1/DataMatrix.txt"));
 
