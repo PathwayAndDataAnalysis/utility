@@ -29,12 +29,17 @@ public class Summary
 		if (x.length == 1) return x[0];
 
 		double total = 0;
+		int cnt = 0;
 
 		for (double v : x)
 		{
-			total += v;
+			if (!Double.isNaN(v))
+			{
+				total += v;
+				cnt++;
+			}
 		}
-		return total / x.length;
+		return cnt == 0 ? Double.NaN : total / cnt;
 	}
 
 	public static double mean(Double[] x)
@@ -42,12 +47,17 @@ public class Summary
 		if (x.length == 0) return Double.NaN;
 
 		double total = 0;
+		int cnt = 0;
 
-		for (double v : x)
+		for (Double v : x)
 		{
-			total += v;
+			if (v != null && !v.isNaN())
+			{
+				total += v;
+				cnt++;
+			}
 		}
-		return total / x.length;
+		return cnt == 0 ? Double.NaN : total / cnt;
 	}
 
 	public static double absoluteMean(double[] x)
@@ -330,30 +340,38 @@ public class Summary
 	{
 		double mean = mean(x);
 		double var = 0;
+		int cnt = 0;
 
 		for (double v : x)
 		{
-			double term = v - mean;
-			var += term * term;
+			if (!Double.isNaN(v))
+			{
+				double term = v - mean;
+				var += term * term;
+				cnt++;
+			}
 		}
 
-		var /= x.length;
-		return var;
+		return cnt == 0 ? Double.NaN : var / cnt;
 	}
 
 	public static double variance(Double[] x)
 	{
 		double mean = mean(x);
 		double var = 0;
+		int cnt = 0;
 
-		for (double v : x)
+		for (Double v : x)
 		{
-			double term = v - mean;
-			var += term * term;
+			if (v != null && !v.isNaN())
+			{
+				double term = v - mean;
+				var += term * term;
+				cnt++;
+			}
 		}
 
-		var /= x.length;
-		return var;
+		return cnt == 0 ? Double.NaN : var / cnt;
 	}
 
 	public static double variance(double[] x, int[] ind)

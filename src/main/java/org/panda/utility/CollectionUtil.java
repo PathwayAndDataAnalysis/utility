@@ -36,6 +36,21 @@ public class CollectionUtil
 		return (int) col1.stream().filter(col2::contains).count();
 	}
 
+	public static int countDiffOfFirst(Collection<?> col1, Collection<?> col2)
+	{
+		return (int) col1.stream().filter(e -> !col2.contains(e)).count();
+	}
+
+	public static int countUnion(Set<?> set1, Set<?> set2)
+	{
+		return countDiffOfFirst(set1, set2) + set2.size();
+	}
+
+	public static double getJaccardSimilarity(Set<?> set1, Set<?> set2)
+	{
+		return countOverlap(set1, set2) / (double) countUnion(set1, set2);
+	}
+
 	public static <T extends Comparable> void printVennSets(Collection<T> col1, Collection<T> col2, Map<T, T> mapFrom2To1)
 	{
 		Set<T> set2 = new HashSet<>();

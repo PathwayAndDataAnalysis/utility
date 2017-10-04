@@ -10,7 +10,6 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import java.io.*;
 import java.nio.channels.FileChannel;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -213,8 +212,14 @@ public class FileUtil
 
 	public static void printLines(String filename, String partialContent) throws IOException
 	{
+		printLines(filename, partialContent, Integer.MAX_VALUE);
+	}
+
+	public static void printLines(String filename, String partialContent, int limit) throws IOException
+	{
 		BufferedReader reader = new BufferedReader(new FileReader(filename));
 
+		int printed = 0;
 		int i = 0;
 		for (String line = reader.readLine(); line != null; line = reader.readLine())
 		{
@@ -222,6 +227,7 @@ public class FileUtil
 			if (line.contains(partialContent))
 			{
 				System.out.println("Line " + i + ": " + line);
+				if (++printed == limit) break;
 			}
 		}
 
@@ -474,10 +480,10 @@ public class FileUtil
 
 
 //		System.out.println(countLines("/home/babur/Projects/utility/PNNL-ovarian-correlations.txt"));
-//		printLines("/home/babur/Documents/PC/temp.owl", 200, 300);
-		printLines("/home/babur/Projects/repo/resource-files/iPTMNet.txt", "DNM1L");
+		printLines("/home/babur/Documents/Analyses/TF-activity/MultipleMyeloma/Filtered_GSE47552_series_matrix.txt", 20000, 20008);
+//		printLines("/home/babur/Documents/PC/PC.sif", "in-complex-with", 100);
 
-//		System.out.println(countLines("/home/babur/Documents/mutex/TCGA/PanCan/1/1/DataMatrix.txt"));
+//		System.out.println(countLines("/home/babur/Documents/Analyses/TF-activity/MultipleMyeloma/Filtered_GSE47552_series_matrix.txt"));
 
 //		HashSet<String> query = new HashSet<>(Arrays.asList("Hugo_Symbol\t", "SP3\t"));
 //		exciseFileToLines("/home/babur/Documents/TCGA/PanCan/mutation.maf", "/home/babur/Documents/Temp/SP3.maf",
