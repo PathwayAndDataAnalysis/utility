@@ -12,6 +12,29 @@ import java.util.Random;
  */
 public class ChiSquare
 {
+	public static double testEnrichment(int size, int featuredOverall, int selected, int featuredSelected)
+	{
+		double p = testDependence(size, featuredOverall, selected, featuredSelected) / 2;
+		if (featuredOverall / (double) size > featuredSelected / (double) selected) p = 1 - p;
+		return p;
+	}
+
+	public static double testExclusivity(int size, int featuredOverall, int selected, int featuredSelected)
+	{
+		double p = testDependence(size, featuredOverall, selected, featuredSelected) / 2;
+		if (featuredOverall / (double) size < featuredSelected / (double) selected) p = 1 - p;
+		return p;
+	}
+
+	public static double testDependence(int size, int featuredOverall, int selected, int featuredSelected)
+	{
+		long[][] cnts = new long[2][2];
+		cnts[0][0] = size - selected - featuredOverall + featuredSelected;
+		cnts[0][1] = featuredOverall - featuredSelected;
+		cnts[1][0] = selected - featuredSelected;
+		cnts[1][1] = featuredSelected;
+		return testDependence(cnts);
+	}
 	public static double testDependence(long[][] cnts)
 	{
 		if (cnts.length < 2 || cnts[0].length < 2) return 1;

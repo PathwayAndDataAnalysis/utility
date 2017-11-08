@@ -116,49 +116,37 @@ public class Histogram2DPlot extends JFrame implements MouseListener, MouseMotio
 		darkestValLabel = new JLabel("" + darkestValue);
 		totalValLabel = new JLabel("Total: 1000");
 
-		darkestValSlider.addChangeListener(new ChangeListener()
-		{
-			public void stateChanged(ChangeEvent e)
+		darkestValSlider.addChangeListener(e -> {
+			if (darkestValue != darkestValSlider.getValue())
 			{
-				if (darkestValue != darkestValSlider.getValue())
-				{
-					darkestValue = darkestValSlider.getValue();
-					darkestValLabel.setText("" + darkestValue);
-					Histogram2DPlot.this.repaint();
-				}
+				darkestValue = darkestValSlider.getValue();
+				darkestValLabel.setText("" + darkestValue);
+				Histogram2DPlot.this.repaint();
 			}
 		});
 
 		JButton zoomInButton = new JButton("+");
 		zoomInButton.setSize(20, 20);
-		zoomInButton.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				double w = xmax - xmin;
-				xmax -= w * ZOOM_STEP;
-				xmin += w * ZOOM_STEP;
-				double h = ymax - ymin;
-				ymax -= h * ZOOM_STEP;
-				ymin += h * ZOOM_STEP;
-				Histogram2DPlot.this.repaint();
-			}
+		zoomInButton.addActionListener(e -> {
+			double w = xmax - xmin;
+			xmax -= w * ZOOM_STEP;
+			xmin += w * ZOOM_STEP;
+			double h = ymax - ymin;
+			ymax -= h * ZOOM_STEP;
+			ymin += h * ZOOM_STEP;
+			Histogram2DPlot.this.repaint();
 		});
 
 		JButton zoomOutButton = new JButton("-");
 		zoomOutButton.setSize(20, 20);
-		zoomOutButton.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				double w = xmax - xmin;
-				xmax += w * ZOOM_STEP;
-				xmin -= w * ZOOM_STEP;
-				double h = ymax - ymin;
-				ymax += h * ZOOM_STEP;
-				ymin -= h * ZOOM_STEP;
-				Histogram2DPlot.this.repaint();
-			}
+		zoomOutButton.addActionListener(e -> {
+			double w = xmax - xmin;
+			xmax += w * ZOOM_STEP;
+			xmin -= w * ZOOM_STEP;
+			double h = ymax - ymin;
+			ymax += h * ZOOM_STEP;
+			ymin -= h * ZOOM_STEP;
+			Histogram2DPlot.this.repaint();
 		});
 
 		JLabel buf1 = new JLabel("    ");

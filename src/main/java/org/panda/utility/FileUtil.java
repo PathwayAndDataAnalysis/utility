@@ -480,8 +480,8 @@ public class FileUtil
 
 
 //		System.out.println(countLines("/home/babur/Projects/utility/PNNL-ovarian-correlations.txt"));
-		printLines("/home/babur/Documents/Analyses/TF-activity/MultipleMyeloma/Filtered_GSE47552_series_matrix.txt", 20000, 20008);
-//		printLines("/home/babur/Documents/PC/PC.sif", "in-complex-with", 100);
+//		printLines("/home/babur/Documents/Analyses/TF-activity/MultipleMyeloma/Filtered_GSE47552_series_matrix.txt", 20000, 20008);
+		printLines("/home/babur/Documents/DARPA/BigMech/REACH-wo-generics.sif", "SOS1\tcontrols-state-change-of\tRAC2", 1000);
 
 //		System.out.println(countLines("/home/babur/Documents/Analyses/TF-activity/MultipleMyeloma/Filtered_GSE47552_series_matrix.txt"));
 

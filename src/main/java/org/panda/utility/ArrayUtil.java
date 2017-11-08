@@ -298,6 +298,32 @@ public class ArrayUtil
 		return v;
 	}
 
+	public static double[] trimNaNs(double[] v)
+	{
+		List<Integer> indices = new ArrayList<>();
+		for (int i = 0; i < v.length; i++)
+		{
+			if (!Double.isNaN(v[i])) indices.add(i);
+		}
+		double[] a = new double[indices.size()];
+		int i = 0;
+		for (Integer index : indices)
+		{
+			a[i++] = v[index];
+		}
+		return a;
+	}
+
+	public static int countNaNs(double[] v)
+	{
+		int cnt = 0;
+		for (double aV : v)
+		{
+			if (Double.isNaN(aV)) cnt++;
+		}
+		return cnt;
+	}
+
 	public static void ORWith(boolean[] toChange, boolean[] toAdd)
 	{
 		if (toChange.length != toAdd.length) throw new IllegalArgumentException(
@@ -417,5 +443,29 @@ public class ArrayUtil
 			arr[i] = list.get(i);
 		}
 		return arr;
+	}
+	public static double[] convertToBasicDoubleArray(List<Double> list)
+	{
+		double[] arr = new double[list.size()];
+		for (int i = 0; i < arr.length; i++)
+		{
+			arr[i] = list.get(i);
+		}
+		return arr;
+	}
+
+	public static double vectorMultiply(double[] v1, double[] v2)
+	{
+		if (v1.length != v2.length)
+			throw new IllegalArgumentException("Array lengths has to match. v1=" + v1.length + " v2=" + v2.length);
+
+		double sum = 0;
+
+		for (int i = 0; i < v1.length; i++)
+		{
+			sum += v1[i] * v2[i];
+		}
+
+		return sum;
 	}
 }
