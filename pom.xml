@@ -8,6 +8,14 @@
 	<artifactId>utility</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
 
+	<repositories>
+		<repository>
+			<id>panda</id>
+			<name>Pathway and Data Analysis Maven Repo</name>
+			<url>https://raw.githubusercontent.com/PathwayAndDataAnalysis/repo/master/maven-repo/</url>
+			<snapshots><enabled>true</enabled></snapshots>
+		</repository>
+	</repositories>
 
 	<build>
 		<pluginManagement>
