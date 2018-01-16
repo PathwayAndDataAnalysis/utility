@@ -28,13 +28,29 @@ public class ChiSquare
 
 	public static double testDependence(int size, int featuredOverall, int selected, int featuredSelected)
 	{
+		return testDependence(convertOverlapToContingencyTable(size, featuredOverall, selected, featuredSelected));
+	}
+
+	public static long[][] convertOverlapToContingencyTable(int size, int featuredOverall, int selected,
+		int featuredSelected)
+	{
 		long[][] cnts = new long[2][2];
 		cnts[0][0] = size - selected - featuredOverall + featuredSelected;
 		cnts[0][1] = featuredOverall - featuredSelected;
 		cnts[1][0] = selected - featuredSelected;
 		cnts[1][1] = featuredSelected;
-		return testDependence(cnts);
+		return cnts;
 	}
+
+	public static int[] convertContingencyTableToOverlap(long[][] cnts)
+	{
+		int featuredSelected = (int) cnts[1][1];
+		int selected = (int) (cnts[1][1] + cnts[1][0]);
+		int featuredOverall = (int) (cnts[1][1] + cnts[0][1]);
+		int size = (int) (cnts[0][0] + cnts[0][1] + cnts[1][0] + cnts[1][1]);
+		return new int[]{size, featuredOverall, selected, featuredSelected};
+	}
+
 	public static double testDependence(long[][] cnts)
 	{
 		if (cnts.length < 2 || cnts[0].length < 2) return 1;
@@ -106,8 +122,13 @@ public class ChiSquare
 
 	public static void main(String[] args)
 	{
+		System.out.println(testDependence(new long[][]{{50, 49}, {50, 50}}));
+	}
+
+	public static void checkUniformity()
+	{
 		int n = 2;
-		int m = 3;
+		int m = 2;
 
 		List<Double> pvals = new ArrayList<>();
 
@@ -122,7 +143,9 @@ public class ChiSquare
 				l[r.nextInt(n)][r.nextInt(m)]++;
 			}
 
-			double p = testDependence(l);
+			int[] c = convertContingencyTableToOverlap(l);
+			double p = testExclusivity(c[0], c[1], c[2], c[3]);
+//			double p = testDependence(l);
 			if (!Double.isNaN(p)) pvals.add(p);
 		}
 

@@ -217,6 +217,11 @@ public class FileUtil
 
 	public static void printLines(String filename, String partialContent, int limit) throws IOException
 	{
+		printLines(filename, new String[]{partialContent}, limit);
+	}
+
+	public static void printLines(String filename, String[] partialContent, int limit) throws IOException
+	{
 		BufferedReader reader = new BufferedReader(new FileReader(filename));
 
 		int printed = 0;
@@ -224,7 +229,18 @@ public class FileUtil
 		for (String line = reader.readLine(); line != null; line = reader.readLine())
 		{
 			i++;
-			if (line.contains(partialContent))
+
+			boolean hasAll = true;
+			for (String s : partialContent)
+			{
+				if (!line.contains(s))
+				{
+					hasAll = false;
+					break;
+				}
+			}
+
+			if (hasAll)
 			{
 				System.out.println("Line " + i + ": " + line);
 				if (++printed == limit) break;
@@ -319,6 +335,21 @@ public class FileUtil
 	public static void lnwrite(String line, Writer writer)
 	{
 		write("\n" + line, writer);
+	}
+
+	public static void write_tab(String line, Writer writer)
+	{
+		write(line + "\t", writer);
+	}
+
+	public static void tab_write(String line, Writer writer)
+	{
+		write("\t" + line, writer);
+	}
+
+	public static void tab_write(double val, Writer writer)
+	{
+		write("\t" + val, writer);
 	}
 
 	public static void exciseFileToLines(String inFile, String outFile, LineSelector selector) { try
@@ -481,7 +512,7 @@ public class FileUtil
 
 //		System.out.println(countLines("/home/babur/Projects/utility/PNNL-ovarian-correlations.txt"));
 //		printLines("/home/babur/Documents/Analyses/TF-activity/MultipleMyeloma/Filtered_GSE47552_series_matrix.txt", 20000, 20008);
-		printLines("/home/babur/Documents/DARPA/BigMech/REACH-wo-generics.sif", "SOS1\tcontrols-state-change-of\tRAC2", 1000);
+		printLines("/home/babur/Documents/Analyses/CPTACBreastCancer/correlation-based/causative-data-centric.sif", new String[]{"AKT1", "BRAF"}, 1000);
 
 //		System.out.println(countLines("/home/babur/Documents/Analyses/TF-activity/MultipleMyeloma/Filtered_GSE47552_series_matrix.txt"));
 

@@ -1,5 +1,9 @@
 package org.panda.utility.statistics;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
 /**
  * Aggregates independent p-values using Fisher's combined probability test.
  * @author Ozgun Babur
@@ -13,6 +17,8 @@ public class FishersCombinedProbability
 	 */
 	public static double pValue(double... pvals)
 	{
+		if (pvals == null || pvals.length == 0) return Double.NaN;
+
 		double chi = 0;
 
 		for (double pval : pvals)
@@ -25,7 +31,18 @@ public class FishersCombinedProbability
 
 	public static void main(String[] args)
 	{
-		System.out.println(pValue(2.8E-4, 0.02));
-//		System.out.println(pValue(1E-16, 0.4));
+		Random r = new Random();
+		List<Double> list = new ArrayList<>();
+		for (int i = 0; i < 1000; i++)
+		{
+			double[] arr = new double[r.nextInt(10) + 1];
+			for (int j = 0; j < arr.length; j++)
+			{
+				arr[j] = r.nextDouble();
+			}
+			list.add(pValue(arr));
+		}
+
+		UniformityChecker.plot(list);
 	}
 }

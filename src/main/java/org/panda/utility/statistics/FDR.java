@@ -240,6 +240,8 @@ public class FDR
 	public static <T> double getPValueThreshold(final Map<T, Double> results,
 		Map<T, Double> limits, double fdrThr)
 	{
+		if (results.isEmpty()) return 0;
+
 		Map<T, Double> qvals = getQVals(results, limits);
 
 		double maxP = 0;

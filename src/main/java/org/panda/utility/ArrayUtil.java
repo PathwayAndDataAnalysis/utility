@@ -112,11 +112,25 @@ public class ArrayUtil
 		return s;
 	}
 
+	public static long sum(long[] v)
+	{
+		int s = 0;
+		for (long v1 : v)
+		{
+			s += v1;
+		}
+		return s;
+	}
+
 	public static double diffOfMeans(double[] x0, double[] x1)
 	{
 		return mean(x1) - mean(x0);
 	}
 
+	public static List<double[]> separateToCategories(int[] categ, double[] vals)
+	{
+		return separateToCategories(categ, vals, 1);
+	}
 
 	/**
 	 * Separates the given double array into groups based on the integer categories. This is useful to prepare the
@@ -125,10 +139,10 @@ public class ArrayUtil
 	 * @param vals
 	 * @return
 	 */
-	public static List<double[]> separateToCategories(int[] categ, double[] vals)
+	public static List<double[]> separateToCategories(int[] categ, double[] vals, int minGroupSize)
 	{
 		if (categ.length != vals.length) throw new IllegalArgumentException("Array sizes must be the same. categ" +
-			".legth = " + categ.length + ", vals.length = " + vals.length);
+			".length = " + categ.length + ", vals.length = " + vals.length);
 
 		Map<Integer, Set<Integer>> categoryIndexMap = new HashMap<>();
 
@@ -147,7 +161,7 @@ public class ArrayUtil
 		List<double[]> list = new ArrayList<>();
 		for (Integer index : indices)
 		{
-			if (categoryIndexMap.get(index).size() < 3) continue;
+			if (categoryIndexMap.get(index).size() < minGroupSize) continue;
 			double[] v = new double[categoryIndexMap.get(index).size()];
 			int i = 0;
 			for (Integer valInd : categoryIndexMap.get(index))
@@ -189,6 +203,43 @@ public class ArrayUtil
 		return rightInd;
 	}
 
+	/**
+	 * For a given 2x2 matrix, this method produces the most unequal distribution while preserving row and column sums.
+	 * The output matrix can be used to detect the most extreme p-value of random distribution with the same sums.
+	 * @param c
+	 * @return
+	 */
+	public static long[][] getExtremized(long[][] c)
+	{
+		if (c.length != 2 || c[0].length != 2) throw new IllegalArgumentException(
+			"The parameter has to be a 2x2 matrix.");
+
+		long[] rowSum = new long[2];
+		long[] colSum = new long[2];
+
+		for (int i = 0; i < rowSum.length; i++)
+		{
+			for (int j = 0; j < colSum.length; j++)
+			{
+				rowSum[i] += c[i][j];
+				colSum[j] += c[i][j];
+			}
+		}
+
+		int minRowInd = rowSum[0] < rowSum[1] ? 0 : 1;
+		int minColInd = colSum[0] < colSum[1] ? 0 : 1;
+
+		long shiftSize = Math.min(c[1 - minRowInd][minColInd], c[minRowInd][1 - minColInd]);
+
+		long[][] e = new long[2][2];
+		e[minRowInd][minColInd] = c[minRowInd][minColInd] + shiftSize;
+		e[1 - minRowInd][minColInd] = c[1 - minRowInd][minColInd] - shiftSize;
+		e[minRowInd][1 - minColInd] = c[minRowInd][1 - minColInd] - shiftSize;
+		e[1 - minRowInd][1 - minColInd] = c[1 - minRowInd][1 - minColInd] + shiftSize;
+
+		return e;
+	}
+
 	public static double[][] separateToBalancedTwo(List<double[]> groups)
 	{
 		int index = getBalancedSeparatingIndex(groups);
@@ -228,6 +279,19 @@ public class ArrayUtil
 		return t;
 	}
 
+	public static long[][] transpose(long[][] c)
+	{
+		long[][] t = new long[c[0].length][c.length];
+		for (int i = 0; i < c.length; i++)
+		{
+			for (int j = 0; j < c[i].length; j++)
+			{
+				t[j][i] = c[i][j];
+			}
+		}
+		return t;
+	}
+
 	public static long[][] convertCategorySubsetsToContingencyTables(int[] c, boolean[] control, boolean[] test)
 	{
 		if (c.length != control.length || c.length != test.length)
@@ -236,13 +300,13 @@ public class ArrayUtil
 		}
 
 		List<Integer> list = getOrderedCategories(c);
-		long[][] t = new long[2][list.size()];
+		long[][] t = new long[list.size()][2];
 
 		for (int i = 0; i < c.length; i++)
 		{
 			if (c[i] != ABSENT_INT && (control[i] || test[i]))
 			{
-				t[test[i] ? 1 : 0][list.indexOf(c[i])]++;
+				t[list.indexOf(c[i])][test[i] ? 1 : 0]++;
 			}
 		}
 		return t;
@@ -324,6 +388,19 @@ public class ArrayUtil
 		return cnt;
 	}
 
+	public static int[] countFalseAndTrue(boolean[] b)
+	{
+		int[] c = new int[]{0, 0};
+
+		for (boolean v : b)
+		{
+			if (v) c[1]++;
+			else c[0]++;
+		}
+
+		return c;
+	}
+
 	public static void ORWith(boolean[] toChange, boolean[] toAdd)
 	{
 		if (toChange.length != toAdd.length) throw new IllegalArgumentException(
@@ -353,6 +430,20 @@ public class ArrayUtil
 			.map(i -> vals[i]).toArray();
 	}
 
+	public static int countNaN(double[] vals, boolean[] select)
+	{
+		if (vals.length != select.length) throw new IllegalArgumentException("Parameter array lengths must be equal.");
+
+		return (int) IntStream.range(0, vals.length).filter(i -> select[i] && Double.isNaN(vals[i])).count();
+	}
+
+	public static int countNotNaN(double[] vals, boolean[] select)
+	{
+		if (vals.length != select.length) throw new IllegalArgumentException("Parameter array lengths must be equal.");
+
+		return (int) IntStream.range(0, vals.length).filter(i -> select[i] && !Double.isNaN(vals[i])).count();
+	}
+
 	public static int countValue(boolean[] b, boolean val)
 	{
 		int cnt = 0;
@@ -369,6 +460,16 @@ public class ArrayUtil
 		for (int v : arr)
 		{
 			if (v == val) cnt++;
+		}
+		return cnt;
+	}
+
+	public static int countValue(int[] arr, int val, boolean[] use)
+	{
+		int cnt = 0;
+		for (int i = 0; i < arr.length; i++)
+		{
+			if (use[i] && arr[i] == val) cnt++;
 		}
 		return cnt;
 	}
@@ -467,5 +568,29 @@ public class ArrayUtil
 		}
 
 		return sum;
+	}
+
+	public static double[] readToDoubleArrayPreserveMissing(String[] s)
+	{
+		double[] d = new double[s.length];
+		for (int i = 0; i < d.length; i++)
+		{
+			try
+			{
+				d[i] = Double.valueOf(s[i]);
+			}
+			catch (NumberFormatException e)
+			{
+				d[i] = Double.NaN;
+			}
+		}
+		return d;
+	}
+
+	public static String[] getTail(String[] s, int startIndex)
+	{
+		String[] ss = new String[s.length - startIndex];
+		System.arraycopy(s, startIndex, ss, 0, ss.length);
+		return ss;
 	}
 }

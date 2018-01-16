@@ -18,6 +18,11 @@ public class UniformityChecker
 		plot(vals, 0, 1);
 	}
 
+	public static void plot(List<Double> vals, BufferedWriter writer) throws IOException
+	{
+		plot(vals, 0, 1, writer);
+	}
+
 	public static void plot(List<Double> vals, String filename) throws IOException
 	{
 		plot(vals, 0, 1, filename);
@@ -39,6 +44,12 @@ public class UniformityChecker
 	public static void plot(List<Double> vals, double min, double max, String filename) throws IOException
 	{
 		BufferedWriter writer = Files.newBufferedWriter(Paths.get(filename));
+		plot(vals, min, max, writer);
+		writer.close();
+	}
+
+	public static void plot(List<Double> vals, double min, double max, BufferedWriter writer) throws IOException
+	{
 		Collections.sort(vals);
 		writer.write("Expected\tExpected\tObserved");
 		double dif = max - min;
@@ -48,6 +59,5 @@ public class UniformityChecker
 			double expected = min + (dif * i / (double) vals.size());
 			writer.write("\n" + expected + "\t" + expected + "\t" + vals.get(i));
 		}
-		writer.close();
 	}
 }
