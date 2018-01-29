@@ -479,6 +479,11 @@ public class ArrayUtil
 		return (int) Arrays.stream(arr).filter(Arrays.asList(query)::contains).count();
 	}
 
+	public static boolean contains(String[] arr, String val)
+	{
+		return Arrays.asList(arr).contains(val);
+	}
+
 	public static String getString(String delim, Object... o)
 	{
 		if (o.length == 0) return "";

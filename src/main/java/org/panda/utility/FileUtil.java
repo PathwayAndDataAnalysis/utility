@@ -352,11 +352,37 @@ public class FileUtil
 		write("\t" + val, writer);
 	}
 
+	public static BufferedWriter newBufferedWriter(String file)
+	{
+		try
+		{
+			return Files.newBufferedWriter(Paths.get(file));
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public static void closeWriter(Writer writer)
+	{
+		try
+		{
+			writer.close();
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+	}
+
 	public static void exciseFileToLines(String inFile, String outFile, LineSelector selector) { try
 	{
 		BufferedWriter writer = Files.newBufferedWriter(Paths.get(outFile));
 		Files.lines(Paths.get(inFile)).filter(selector::select).forEach(line ->
 			FileUtil.writeln(line, writer));
+		writer.close();
 	}
 	catch (IOException e){throw new RuntimeException(e);}}
 
@@ -380,6 +406,78 @@ public class FileUtil
 			.map(t -> t[colIndex]).collect(Collectors.toSet());
 	}
 	catch (IOException e){throw new RuntimeException(e);}}
+
+	public static void transpose(String inFile, String inDelim, String outFile, String outDelim, StringArrayProcessor p,
+		boolean[] colSelect)
+	{
+		try
+		{
+			List<String[]> inList = Files.lines(Paths.get(inFile)).map(l -> l.split(inDelim)).collect(Collectors.toList());
+			if (inList.isEmpty()) return;
+
+			if (p != null)
+			{
+				inList.forEach(p::process);
+			}
+
+			List<String> outList = new ArrayList<>();
+
+			int size = inList.get(0).length;
+
+			for (int i = 0; i < size; i++)
+			{
+				if (colSelect != null && !colSelect[i]) continue;
+
+				String[] s = new String[inList.size()];
+
+				for (int j = 0; j < inList.size(); j++)
+				{
+					s[j] = inList.get(j)[i];
+				}
+
+				outList.add(ArrayUtil.getString(outDelim, s));
+			}
+
+			BufferedWriter writer = Files.newBufferedWriter(Paths.get(outFile));
+			outList.forEach(l -> FileUtil.writeln(l, writer));
+			writer.close();
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+	}
+
+	public static void writeLinesToFile(Collection<String> lines, String filename)
+	{
+		try
+		{
+			BufferedWriter writer = Files.newBufferedWriter(Paths.get(filename));
+			lines.forEach(l -> writeln(l, writer));
+			writer.close();
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+	}
+
+	public interface StringArrayProcessor
+	{
+		void process(String[] array);
+	}
+
+	public static Stream<String> lines(String filename)
+	{
+		try
+		{
+			return Files.lines(Paths.get(filename));
+		}
+		catch (IOException e)
+		{
+			throw new RuntimeException(e);
+		}
+	}
 
 	//----- Section: XLSX related --------------------------------------------------------------------------------------
 
@@ -449,7 +547,6 @@ public class FileUtil
 	catch (IOException e){throw new RuntimeException(e);}}
 
 
-
 	//--- Section: SIF files ------------------------------------------------------------------------------------------|
 
 	public static void replaceNodeNamesInSIFFile(String filename, Map<String, String> substutitionMap) { try
@@ -512,7 +609,9 @@ public class FileUtil
 
 //		System.out.println(countLines("/home/babur/Projects/utility/PNNL-ovarian-correlations.txt"));
 //		printLines("/home/babur/Documents/Analyses/TF-activity/MultipleMyeloma/Filtered_GSE47552_series_matrix.txt", 20000, 20008);
-		printLines("/home/babur/Documents/Analyses/CPTACBreastCancer/correlation-based/causative-data-centric.sif", new String[]{"AKT1", "BRAF"}, 1000);
+//		printLines("/home/babur/Documents/Analyses/CPTACBreastCancer/correlation-based/causative-data-centric.sif", new String[]{"AKT1", "BRAF"}, 1000);
+
+		exciseFileToLines("/home/babur/Documents/PC/SignedPC-p2-e2.sif", "/home/babur/Documents/Papers/Authoring/CausalPath/temp.sif", line -> line.contains("http://identifiers.org/reactome/R-HSA-1183067"));
 
 //		System.out.println(countLines("/home/babur/Documents/Analyses/TF-activity/MultipleMyeloma/Filtered_GSE47552_series_matrix.txt"));
 
