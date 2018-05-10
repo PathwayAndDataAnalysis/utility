@@ -39,7 +39,7 @@ public class PhosphoGraph extends DirectedGraph
 		{
 			return sites.get(source).get(target);
 		}
-		return null;
+		return Collections.emptySet();
 	}
 
 	public boolean hasSites(String source, String target)

@@ -448,6 +448,24 @@ public class FileUtil
 		}
 	}
 
+	public static void fixRStyleHeader(String inFile, String delim, String outFile)
+	{
+		try
+		{
+			List<String> inList = Files.lines(Paths.get(inFile)).collect(Collectors.toList());
+			if (inList.isEmpty()) return;
+
+			BufferedWriter writer = Files.newBufferedWriter(Paths.get(outFile));
+			inList.stream().limit(1).forEach(l -> FileUtil.write(delim + l, writer));
+			inList.stream().skip(1).forEach(l -> FileUtil.lnwrite(l, writer));
+			writer.close();
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+	}
+
 	public static void writeLinesToFile(Collection<String> lines, String filename)
 	{
 		try

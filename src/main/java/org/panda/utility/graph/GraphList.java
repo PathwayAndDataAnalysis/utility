@@ -107,7 +107,10 @@ public class GraphList extends Graph
 		Set<String> result = new HashSet<>();
 		for (Graph graph : graphs)
 		{
-			result.addAll(((DirectedGraph) graph).getUpstream(gene));
+			if (graph instanceof DirectedGraph)
+			{
+				result.addAll(((DirectedGraph) graph).getUpstream(gene));
+			}
 		}
 		return result;
 	}
@@ -117,7 +120,10 @@ public class GraphList extends Graph
 		Set<String> result = new HashSet<>();
 		for (Graph graph : graphs)
 		{
-			result.addAll(((DirectedGraph) graph).getDownstream(gene));
+			if (graph instanceof DirectedGraph)
+			{
+				result.addAll(((DirectedGraph) graph).getDownstream(gene));
+			}
 		}
 		return result;
 	}

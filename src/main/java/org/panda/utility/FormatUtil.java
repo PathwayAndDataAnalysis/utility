@@ -45,4 +45,39 @@ public class FormatUtil
 		if (a < 0) result = Math.round(result);
 		return result;
 	}
+
+	/**
+	 * Converts a positive integer to a string with leading zeros.
+	 * @param num the number
+	 * @param max the maximum number in series
+	 * @return the number represented as a string with leading zeros for appropriate alignment
+	 */
+	public static String posIntToString(int num, int max)
+	{
+		int space = numOfDigits(max) - numOfDigits(num);
+		return zeros(space) + num;
+	}
+
+	private static String zeros(int howMany)
+	{
+		String s = "";
+		for (int i = 0; i < howMany; i++)
+		{
+			s += "0";
+		}
+		return s;
+	}
+
+	private static int numOfDigits(int x)
+	{
+		int d = 1;
+
+		while (x > 9)
+		{
+			x /= 10;
+			d++;
+		}
+
+		return d;
+	}
 }
