@@ -17,8 +17,8 @@
 
 	<scm>
 		<developerConnection>scm:local:file:///home/babur/Temp/repo/</developerConnection>
-	  <tag>utility-1.0.0</tag>
-  </scm>
+		<tag>utility-1.0.0</tag>
+	</scm>
 
 
 	<build>
