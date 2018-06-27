@@ -1,5 +1,7 @@
 package org.panda.utility.statistics;
 
+import org.panda.utility.ArrayUtil;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,5 +49,35 @@ public class ZScore
 		}
 
 		return z;
+	}
+
+	/**
+	 * Converts the provided array into z-scores. May return null.
+	 * @param original the array
+	 * @return z-scores
+	 */
+	public static double[] get(double[] original)
+	{
+		double[] arr = ArrayUtil.trimNaNs(original);
+
+		if (arr.length < 3) return null;
+
+		double sd = Summary.stdev(arr);
+
+		if (sd == 0 || Double.isNaN(sd)) return null;
+
+		double mean = Summary.mean(arr);
+
+		double[] zarr = new double[original.length];
+
+		for (int i = 0; i < zarr.length; i++)
+		{
+			if (Double.isNaN(original[i])) zarr[i] = Double.NaN;
+			else
+			{
+				zarr[i] = (original[i] - mean) / sd;
+			}
+		}
+		return zarr;
 	}
 }

@@ -400,6 +400,12 @@ public class FileUtil
 	}
 	catch (IOException e){throw new RuntimeException(e);}}
 
+	/**
+	 * Collects the encountered string in the given column of the tab delimited file into a set.
+	 * @param filename
+	 * @param colIndex starts from 0
+	 * @return
+	 */
 	public static Set<String> getTermsInTabDelimitedColumn(String filename, int colIndex) { try
 	{
 		return Files.lines(Paths.get(filename)).skip(1).map(line -> line.split("\t")).filter(token -> token.length > colIndex)
@@ -602,6 +608,13 @@ public class FileUtil
 	}
 	catch (IOException e){throw new RuntimeException(e);}}
 
+	public static Set<String> getNodePairsInSIFFile(String filename) { try
+	{
+		return Files.lines(Paths.get(filename)).map(line -> line.split("\t")).filter(token -> token.length >= 3)
+			.map(token -> token[0] + " " + token[2]).collect(Collectors.toSet());
+	}
+	catch (IOException e){throw new RuntimeException(e);}}
+
 	public static boolean sameFiles(String file1, String file2) throws FileNotFoundException
 	{
 		Scanner sc1 = new Scanner(new File(file1));
@@ -617,7 +630,7 @@ public class FileUtil
 
 	public static void main(String[] args) throws IOException
 	{
-//		printLines("/home/babur/Documents/TCGA/PanCan/mutation.maf", "MTOR\t");
+		printLines("/media/babur/6TB1/TCGA-pancan/whole/DataMatrix.txt", 1, 2);
 
 //		exciseFileToLines("/home/babur/Documents/TCGA/PanCan/mutation.maf", "/home/babur/Documents/Temp/temp.txt",
 //			line -> line.startsWith("Hugo_Symbol\t") ||
@@ -629,7 +642,7 @@ public class FileUtil
 //		printLines("/home/babur/Documents/Analyses/TF-activity/MultipleMyeloma/Filtered_GSE47552_series_matrix.txt", 20000, 20008);
 //		printLines("/home/babur/Documents/Analyses/CPTACBreastCancer/correlation-based/causative-data-centric.sif", new String[]{"AKT1", "BRAF"}, 1000);
 
-		exciseFileToLines("/home/babur/Documents/PC/SignedPC-p2-e2.sif", "/home/babur/Documents/Papers/Authoring/CausalPath/temp.sif", line -> line.contains("http://identifiers.org/reactome/R-HSA-1183067"));
+//		exciseFileToLines("/home/babur/Documents/PC/SignedPC-p2-e2.sif", "/home/babur/Documents/Papers/Authoring/CausalPath/temp.sif", line -> line.contains("http://identifiers.org/reactome/R-HSA-1183067"));
 
 //		System.out.println(countLines("/home/babur/Documents/Analyses/TF-activity/MultipleMyeloma/Filtered_GSE47552_series_matrix.txt"));
 

@@ -17,6 +17,11 @@
 		</repository>
 	</repositories>
 
+	<scm>
+		<developerConnection>scm:git:file:///home/babur/Temp/repo/</developerConnection>
+	</scm>
+
+
 	<build>
 		<pluginManagement>
 			<plugins>
@@ -26,6 +31,10 @@
 						<source>1.8</source>
 						<target>1.8</target>
 					</configuration>
+				</plugin>
+				<plugin>
+					<artifactId>maven-release-plugin</artifactId>
+					<version>2.5.2</version>
 				</plugin>
 				<plugin>
 					<artifactId>maven-assembly-plugin</artifactId>
@@ -97,7 +106,8 @@
 		<repository>
 			<id>panda.local</id>
 			<name>Pathway and Data Analysis Local Repository</name>
-			<url>file://${basedir}/../repo/maven-repo/</url>
+			<!--<url>file://${basedir}/../repo/maven-repo/</url>-->
+			<url>file:/home/babur/Temp/repo/</url>
 		</repository>
 	</distributionManagement>
 
