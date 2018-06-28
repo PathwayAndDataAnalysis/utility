@@ -4,7 +4,7 @@
 
 	<groupId>org.panda</groupId>
 	<artifactId>utility</artifactId>
-	<version>1.0.0</version>
+	<version>1.0.0-SNAPSHOT</version>
 
 	<repositories>
 		<repository>
@@ -16,8 +16,7 @@
 	</repositories>
 
 	<scm>
-		<developerConnection>scm:local:file:///home/babur/Temp/repo/</developerConnection>
-		<tag>utility-1.0.0</tag>
+		<developerConnection>scm:git:file:///home/babur/Temp/repo/</developerConnection>
 	</scm>
 
 
