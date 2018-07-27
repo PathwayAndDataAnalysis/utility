@@ -20,15 +20,20 @@ public class ZScore
 			List<Double> dist = distMap.get(id);
 			if (dist == null) continue;
 
-			double mean = Summary.meanOfDoubles(dist);
-			double sd = Summary.stdev(dist.toArray(new Double[dist.size()]));
+			double zval = getZVal(sample.get(id), dist);
 
-			Double actual = sample.get(id);
-
-			z.put(id, (actual - mean) / sd);
+			z.put(id, zval);
 		}
 
 		return z;
+	}
+
+	public static double getZVal(double value, List<Double> dist)
+	{
+		double mean = Summary.meanOfDoubles(dist);
+		double sd = Summary.stdev(dist.toArray(new Double[dist.size()]));
+
+		return (value - mean) / sd;
 	}
 
 	public static Map<String, Double> get(Map<String, double[]> distMap, Map<String, Double> sample, Object passNull)
@@ -45,7 +50,8 @@ public class ZScore
 
 			Double actual = sample.get(id);
 
-			z.put(id, (actual - mean) / sd);
+			double zval = (actual - mean) / sd;
+			z.put(id, zval);
 		}
 
 		return z;

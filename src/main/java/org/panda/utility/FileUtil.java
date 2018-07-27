@@ -337,14 +337,14 @@ public class FileUtil
 		write("\n" + line, writer);
 	}
 
-	public static void write_tab(String line, Writer writer)
+	public static void write_tab(String token, Writer writer)
 	{
-		write(line + "\t", writer);
+		write(token + "\t", writer);
 	}
 
-	public static void tab_write(String line, Writer writer)
+	public static void tab_write(String token, Writer writer)
 	{
-		write("\t" + line, writer);
+		write("\t" + token, writer);
 	}
 
 	public static void tab_write(double val, Writer writer)
