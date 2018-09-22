@@ -10,7 +10,7 @@ import java.util.List;
  */
 public class FunctionPlot extends JPanel
 {
-	Function func;
+	Map<Function, String> funcMap;
 	double minX;
 	double maxX;
 	double minY;
@@ -39,17 +39,52 @@ public class FunctionPlot extends JPanel
 		new Color(119, 33, 111),
 	};
 
+	Color[] funcColors = new Color[]{
+		new Color(10, 10, 10),
+		new Color(0, 69, 134),
+		new Color(255, 66, 14),
+		new Color(255, 211, 32),
+		new Color(87, 157, 28),
+		new Color(126, 0, 33),
+		new Color(131, 202, 255),
+		new Color(49, 64, 4),
+		new Color(174, 207, 0),
+		new Color(75, 31, 111),
+		new Color(255, 149, 14),
+		new Color(197, 0, 11),
+		new Color(0, 132, 209),
+		new Color(114, 159, 207),
+		new Color(52, 101, 164),
+		new Color(221, 72, 20),
+		new Color(174, 167, 159),
+		new Color(51, 51, 51),
+		new Color(119, 33, 111),
+	};
+
 	List<XSet> valsToPlace;
 
-	public FunctionPlot(Function func, double min, double max)
+	public FunctionPlot(Map<Function, String> funcMap, double min, double max)
 	{
 		super(true);
-		this.func = func;
+		this.funcMap = funcMap;
+		init(min, max);
+	}
+
+	private void init(double min, double max)
+	{
 		this.minX = min;
 		this.maxX = max;
 		buffer = 10;
 		xMarks = new HashMap<>();
 		valsToPlace = new ArrayList<>();
+	}
+
+	public FunctionPlot(Function func, double min, double max)
+	{
+		super(true);
+		this.funcMap = new HashMap<>();
+		funcMap.put(func, null);
+		init(min, max);
 	}
 
 	public void addValsToPlace(String name, double[] vals)
@@ -93,8 +128,9 @@ public class FunctionPlot extends JPanel
 		}
 
 		int[] xx = new int[getGraphWidth()];
-		double[] y = new double[xx.length];
-		int[] yy = new int[xx.length];
+
+		Map<Function, double[]> yMap = new LinkedHashMap<>();
+		funcMap.keySet().forEach(f -> yMap.put(f, new double[xx.length]));
 
 		double range = (maxX - minX) / (getGraphWidth() - 1);
 
@@ -102,19 +138,47 @@ public class FunctionPlot extends JPanel
 		for (double x = minX; x <= maxX + (range / 10); x += range)
 		{
 			xx[i] = transformX(x);
-			y[i++] = func.value(x);
-		}
-		minY = Summary.min(y);
-		maxY = Summary.max(y);
 
-		for (int j = 0; j < xx.length; j++)
-		{
-			yy[j] = transformY(y[j]);
+			int tempI = i++;
+			double tempX = x;
+			funcMap.keySet().forEach(f -> yMap.get(f)[tempI] = f.value(tempX));
 		}
 
-		for (int j = 1; j < xx.length; j++)
+		minY = Double.MAX_VALUE;
+		maxY = -Double.MAX_VALUE;
+
+		for (Function fun : yMap.keySet())
 		{
-			g.drawLine(xx[j-1], yy[j-1], xx[j], yy[j]);
+			minY = Math.min(Summary.min(yMap.get(fun)), minY);
+			maxY = Math.max(Summary.max(yMap.get(fun)), maxY);
+		}
+
+		i = 0;
+		for (Function fun : yMap.keySet())
+		{
+			g.setColor(funcColors[i++]);
+
+			int peakX = Integer.MAX_VALUE;
+			int peakY = Integer.MAX_VALUE;
+
+			int[] yy = new int[xx.length];
+			for (int j = 0; j < xx.length; j++)
+			{
+				yy[j] = transformY(yMap.get(fun)[j]);
+				if (yy[j] < peakY)
+				{
+					peakY = yy[j];
+					peakX = xx[j];
+				}
+			}
+
+			for (int j = 1; j < xx.length; j++)
+			{
+				g.drawLine(xx[j - 1], yy[j - 1], xx[j], yy[j]);
+			}
+
+			String name = funcMap.get(fun);
+			if (name != null && !name.isEmpty()) g.drawString(name, peakX, peakY);
 		}
 
 		i = 0;
@@ -123,7 +187,7 @@ public class FunctionPlot extends JPanel
 			int x = transformX(xMarks.get(name));
 			g.setColor(labelColors[i++ % labelColors.length]);
 			g.drawLine(x, buffer, x, getGraphHeight() + buffer);
-			g.drawString(name, x+1, buffer * (i+1));
+			g.drawString(name, x + 1, buffer * (i + 1));
 		}
 
 		g.setColor(Color.BLACK);

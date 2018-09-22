@@ -15,17 +15,33 @@ import java.util.stream.Collectors;
  */
 public class KernelDensityPlot extends JFrame
 {
-	KernelDensityEstimation kde;
+	Map<KernelDensityEstimation, String> kdeMap;
 	protected JSlider deltaSlider;
 	FunctionPlot fp;
 
 	public KernelDensityPlot(KernelDensityEstimation kde) throws HeadlessException
 	{
-		this.kde = kde;
+		this.kdeMap = new HashMap<>();
+		kdeMap.put(kde, null);
+		init();
+	}
 
-		double[] vals = kde.getVals();
-		double maxX = Summary.max(vals);
-		double minX = Summary.min(vals);
+	public KernelDensityPlot(Map<KernelDensityEstimation, String> kdeMap) throws HeadlessException
+	{
+		this.kdeMap = kdeMap;
+		init();
+	}
+
+	private void init()
+	{
+		double maxX = -Double.MAX_VALUE;
+		double minX = Double.MAX_VALUE;
+		for (KernelDensityEstimation kde : kdeMap.keySet())
+		{
+			double[] vals = kde.getVals();
+			maxX = Math.max(Summary.max(vals), maxX);
+			minX = Math.min(Summary.min(vals), minX);
+		}
 
 		this.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		this.setTitle("Kernel Density Estimation Plot");
@@ -33,7 +49,7 @@ public class KernelDensityPlot extends JFrame
 		this.setSize(600, 600);
 
 		this.setLayout(new BorderLayout());
-		fp = new FunctionPlot(kde, minX, maxX);
+		fp = new FunctionPlot(new LinkedHashMap<>(kdeMap), minX, maxX);
 		this.getContentPane().add(fp, BorderLayout.CENTER);
 
 		JPanel cPanel = new JPanel();
@@ -47,7 +63,7 @@ public class KernelDensityPlot extends JFrame
 		{
 			int value = deltaSlider.getValue();
 			double factor = value == 0 ? 1 : value < 0 ? 1D / (-(value/2D) + 1) : (value/2D) + 1;
-			kde.setDelta(kde.initDeltaToDefault() * factor);
+			kdeMap.keySet().forEach(kde -> kde.setDelta(kde.initDeltaToDefault() * factor));
 			repaint();
 		});
 
@@ -90,6 +106,21 @@ public class KernelDensityPlot extends JFrame
 		{
 			kdp.fp.addValsToPlace(name, valMap.get(name));
 		}
+		kdp.setVisible(true);
+		kdp.setLocation(new java.awt.Point(kdp.getLocation().x + kdp.getWidth(), kdp.getLocation().y));
+
+		do
+		{
+			Waiter.pause(1000);
+		}
+		while (kdp.isVisible());
+	}
+
+	public static void plotMap(String title, Map<KernelDensityEstimation, String> kdeMap)
+	{
+		KernelDensityPlot kdp = new KernelDensityPlot(kdeMap);
+		if (title != null) kdp.setTitle(title);
+		kdp.setSize(300, 300);
 		kdp.setVisible(true);
 		kdp.setLocation(new java.awt.Point(kdp.getLocation().x + kdp.getWidth(), kdp.getLocation().y));
 

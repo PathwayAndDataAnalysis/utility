@@ -413,6 +413,16 @@ public class FileUtil
 	}
 	catch (IOException e){throw new RuntimeException(e);}}
 
+	/**
+	 * Collects the rows in the file in a Set of String.
+	 * @param filename
+	 */
+	public static Set<String> getLinesInSet(String filename) { try
+	{
+		return Files.lines(Paths.get(filename)).collect(Collectors.toSet());
+	}
+	catch (IOException e){throw new RuntimeException(e);}}
+
 	public static void transpose(String inFile, String inDelim, String outFile, String outDelim, StringArrayProcessor p,
 		boolean[] colSelect)
 	{
@@ -626,6 +636,23 @@ public class FileUtil
 			if (!sc1.nextLine().equals(sc2.nextLine())) return false;
 		}
 		return true;
+	}
+
+	public static List<String> getSubdirectoriesContaining(String parent, String file)
+	{
+		File dir = new File(parent);
+		if (!dir.isDirectory()) return Collections.emptyList();
+
+		List<String> list = new ArrayList<>();
+
+		File target = new File(parent + File.separator + file);
+		if (target.exists() && !target.isDirectory()) list.add(parent);
+
+		for (File child : dir.listFiles())
+		{
+			if (child.isDirectory()) list.addAll(getSubdirectoriesContaining(child.getPath(), file));
+		}
+		return list;
 	}
 
 	public static void main(String[] args) throws IOException
