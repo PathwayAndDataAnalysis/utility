@@ -13,9 +13,14 @@ public class Memory
 
 	public static boolean printIfNew(String s)
 	{
+		return printIfNew(s, "");
+	}
+
+	public static boolean printIfNew(String s, String prefix)
+	{
 		if (!set.contains(s))
 		{
-			System.out.println(s);
+			System.out.println(prefix + s);
 		}
 
 		return seenBefore(s);

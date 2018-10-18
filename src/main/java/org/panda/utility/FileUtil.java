@@ -250,6 +250,24 @@ public class FileUtil
 		reader.close();
 	}
 
+	public static void printShortLines(String filename, int lengthLimit) throws IOException
+	{
+		BufferedReader reader = new BufferedReader(new FileReader(filename));
+
+		int i = 0;
+		for (String line = reader.readLine(); line != null; line = reader.readLine())
+		{
+			i++;
+
+			if (line.length() <= lengthLimit)
+			{
+				System.out.println("Line " + i + ": " + line);
+			}
+		}
+
+		reader.close();
+	}
+
 	public static void printLines(String filename, int fromLine, int toLine) throws IOException
 	{
 		BufferedReader reader = new BufferedReader(new FileReader(filename));
@@ -657,7 +675,8 @@ public class FileUtil
 
 	public static void main(String[] args) throws IOException
 	{
-		printLines("/media/babur/6TB1/TCGA-pancan/whole/DataMatrix.txt", 1, 2);
+//		printLines("/media/babur/6TB1/TCGA-pancan/whole/DataMatrix.txt", 1, 2);
+		printShortLines("/home/ozgun/Data/PC/v10/summary.txt", 200);
 
 //		exciseFileToLines("/home/babur/Documents/TCGA/PanCan/mutation.maf", "/home/babur/Documents/Temp/temp.txt",
 //			line -> line.startsWith("Hugo_Symbol\t") ||
