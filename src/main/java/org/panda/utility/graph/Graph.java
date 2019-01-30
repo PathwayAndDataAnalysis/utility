@@ -360,7 +360,17 @@ public abstract class Graph implements Serializable
 		return null;
 	}
 
+	/**
+	 * Keeps the edges between the given symbols.
+	 * @param symbols desired nodes that will remain in the graph
+	 */
 	public abstract void crop(Collection<String> symbols);
+
+	/**
+	 * Keeps the edges that at least one end is among the given genes.
+	 * @param symbols seed
+	 */
+	public abstract void cropToNeighborhood(Collection<String> symbols);
 
 	protected void crop(Map<String, Set<String>> map, Collection<String> symbols)
 	{
@@ -369,6 +379,24 @@ public abstract class Graph implements Serializable
 		{
 			if (!symbols.contains(s)) remKeys.add(s);
 			else
+			{
+				map.get(s).retainAll(symbols);
+
+				if (map.get(s).isEmpty()) remKeys.add(s);
+			}
+		}
+		for (String key : remKeys)
+		{
+			map.remove(key);
+		}
+	}
+
+	protected void cropToNeighborhood(Map<String, Set<String>> map, Collection<String> symbols)
+	{
+		Set<String> remKeys = new HashSet<>();
+		for (String s : map.keySet())
+		{
+			if (!symbols.contains(s))
 			{
 				map.get(s).retainAll(symbols);
 

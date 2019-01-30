@@ -135,6 +135,30 @@ public class FDR
 		return result;
 	}
 
+	public static <T> List<T> selectUsingHalfRange(final Map<T, Double> results, double fdrThr)
+	{
+		long halfCnt = results.values().stream().filter(v -> v < 0.5).count();
+		long cnt = halfCnt * 2;
+
+		List<T> keys = new ArrayList<>(results.keySet());
+
+		keys.sort(Comparator.comparing(results::get));
+
+		int maxIndex = -1;
+		for (int i = 0; results.get(keys.get(i)) < 0.5; i++)
+		{
+			T key = keys.get(i);
+			double pval = results.get(key);
+
+			double noise = pval * cnt;
+
+			if (noise / (i + 1) <= fdrThr) maxIndex = i;
+		}
+
+		if (maxIndex < 0) return Collections.emptyList();
+		else return new ArrayList<>(keys.subList(0, maxIndex + 1));
+	}
+
 	public static <T> List<T> selectBH(final Map<T, Double> results, double fdrThr)
 	{
 		return select(results, null, fdrThr);
@@ -151,7 +175,7 @@ public class FDR
 
 		List<T> keys = new ArrayList<>(results.keySet());
 
-		Collections.sort(keys, (o1, o2) -> results.get(o1).compareTo(results.get(o2)));
+		keys.sort(Comparator.comparing(results::get));
 
 		int limIndex = 0;
 		double limPv = limitList.get(0);

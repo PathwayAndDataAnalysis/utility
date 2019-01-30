@@ -676,7 +676,7 @@ public class FileUtil
 	public static void main(String[] args) throws IOException
 	{
 //		printLines("/media/babur/6TB1/TCGA-pancan/whole/DataMatrix.txt", 1, 2);
-		printShortLines("/home/ozgun/Data/PC/v10/summary.txt", 200);
+//		printShortLines("/home/ozgun/Data/PC/v10/summary.txt", 200);
 
 //		exciseFileToLines("/home/babur/Documents/TCGA/PanCan/mutation.maf", "/home/babur/Documents/Temp/temp.txt",
 //			line -> line.startsWith("Hugo_Symbol\t") ||
@@ -686,7 +686,8 @@ public class FileUtil
 
 //		System.out.println(countLines("/home/babur/Projects/utility/PNNL-ovarian-correlations.txt"));
 //		printLines("/home/babur/Documents/Analyses/TF-activity/MultipleMyeloma/Filtered_GSE47552_series_matrix.txt", 20000, 20008);
-//		printLines("/home/babur/Documents/Analyses/CPTACBreastCancer/correlation-based/causative-data-centric.sif", new String[]{"AKT1", "BRAF"}, 1000);
+		printLines("/home/ozgun/Analyses/CausalPath-paper/causal-priors.txt", "CEBPA\tdown", 1000);
+//		printLines("/home/ozgun/Code/repo/resource-files/iPTMNet.txt", 0, 3);
 
 //		exciseFileToLines("/home/babur/Documents/PC/SignedPC-p2-e2.sif", "/home/babur/Documents/Papers/Authoring/CausalPath/temp.sif", line -> line.contains("http://identifiers.org/reactome/R-HSA-1183067"));
 

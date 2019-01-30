@@ -204,6 +204,11 @@ public class UndirectedGraph extends Graph
 		crop(ppMap, symbols);
 	}
 
+	public void cropToNeighborhood(Collection<String> symbols)
+	{
+		cropToNeighborhood(ppMap, symbols);
+	}
+
 	protected Set<String> getRelationStrings()
 	{
 		Set<String> set = new HashSet<String>();

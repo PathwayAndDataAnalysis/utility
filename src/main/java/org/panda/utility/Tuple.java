@@ -23,6 +23,8 @@ public class Tuple
 	 */
 	public double p;
 
+	public static final Tuple NaN = new Tuple();
+
 	public Tuple()
 	{
 		this.v = Double.NaN;
@@ -74,6 +76,6 @@ public class Tuple
 			pp[i] = list.get(i).p;
 		}
 
-		return new Tuple(v, FishersCombinedProbability.pValue(pp));
+		return new Tuple(v, FishersCombinedProbability.combine(pp));
 	}
 }

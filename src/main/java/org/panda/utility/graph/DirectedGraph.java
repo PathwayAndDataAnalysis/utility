@@ -509,6 +509,12 @@ public class DirectedGraph extends Graph
 		crop(dwMap, symbols);
 	}
 
+	public void cropToNeighborhood(Collection<String> symbols)
+	{
+		cropToNeighborhood(upMap, symbols);
+		cropToNeighborhood(dwMap, symbols);
+	}
+
 	protected Set<String> getRelationStrings()
 	{
 		Set<String> set = new HashSet<String>();

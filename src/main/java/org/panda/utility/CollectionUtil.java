@@ -263,6 +263,15 @@ public class CollectionUtil
 		return set;
 	}
 
+	public static <T> void removeIntersection(Collection<T>... col)
+	{
+		Set<T> intersection = getIntersection(col);
+		for (Collection<T> c : col)
+		{
+			c.removeAll(intersection);
+		}
+	}
+
 	public static <T> Set<T> getUnion(Collection<T>... col)
 	{
 		Set<T> set = new HashSet<>();

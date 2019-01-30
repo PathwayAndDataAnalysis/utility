@@ -15,11 +15,11 @@ import java.util.stream.IntStream;
  */
 public class TTest
 {
-	public static double getPValOfMeanDifference(double[] x0, double[] x1)
+	public static double getPValOfMeanDifference(double[] control, double[] test)
 	{
-		if (x0.length < 2 || x1.length < 2) return Double.NaN;
+		if (control.length < 2 || test.length < 2) return Double.NaN;
 
-		return TestUtils.tTest(x0, x1);
+		return TestUtils.tTest(control, test);
 
 //		double t = t(x0, x1);
 //		return pval(t, length(x0) + length(x1) - 2);
@@ -87,27 +87,40 @@ public class TTest
 		return TestUtils.tTest(mean, x);
 	}
 
-	public static Tuple test(double[] x0, double[] x1)
+	public static Tuple testPaired(double[] control, double[] test)
 	{
-		if (x0.length > 2 && x1.length > 2)
+		if (control.length > 2 && test.length > 2)
 		{
-			return new Tuple(TestUtils.t(x0, x1), getPValOfMeanDifference(x0, x1));
+			return new Tuple(TestUtils.pairedT(test, control), TestUtils.pairedTTest(test, control));
 		}
-		else if (x0.length == 2 && x1.length > 2)
+
+		return new Tuple(Double.NaN, Double.NaN);
+	}
+	public static Tuple test(double[] control, double[] test)
+	{
+		if (control.length > 2 && test.length > 2)
 		{
-			return testFewValuesAgainstASample(x0, x1);
+			return new Tuple(TestUtils.t(test, control), getPValOfMeanDifference(test, control));
 		}
-		else if (x0.length == 1 && x1.length > 2)
+		else if (control.length == 2 && test.length > 2)
 		{
-			return test(x0[0], x1);
+			Tuple tup = testFewValuesAgainstASample(test, control);
+			tup.v *= -1;
+			return tup;
 		}
-		else if (x1.length == 2 && x0.length > 2)
+		else if (control.length == 1 && test.length > 2)
 		{
-			return testFewValuesAgainstASample(x1, x0);
+			Tuple tup = test(test, control[0]);
+			tup.v *= -1;
+			return tup;
 		}
-		else if (x1.length == 1 && x0.length > 2)
+		else if (test.length == 2 && control.length > 2)
 		{
-			return test(x1[0], x0);
+			return testFewValuesAgainstASample(control, test);
+		}
+		else if (test.length == 1 && control.length > 2)
+		{
+			return test(control, test[0]);
 		}
 
 		return new Tuple(Double.NaN, Double.NaN);
@@ -116,12 +129,12 @@ public class TTest
 	/**
 	 * Tests if the given value belongs to the drawn sample.
 	 */
-	public static Tuple test(double x0, double[] x1)
+	public static Tuple test(double[] control, double test)
 	{
-		if (x1.length < 2) return new Tuple(Double.NaN, Double.NaN);
+		if (control.length < 2) return new Tuple(Double.NaN, Double.NaN);
 
-		TDistribution dist = new TDistribution(x1.length - 1);
-		double t = (x0 - Summary.mean(x1)) / Summary.stdev(x1);
+		TDistribution dist = new TDistribution(control.length - 1);
+		double t = (test - Summary.mean(control)) / Summary.stdev(control);
 
 		double cdf = dist.cumulativeProbability(t);
 		double p = cdfToPval(cdf);
@@ -131,12 +144,12 @@ public class TTest
 	/**
 	 * Tests if the given value belongs to the drawn sample.
 	 */
-	public static Tuple testFewValuesAgainstASample(double[] few, double[] sample)
+	public static Tuple testFewValuesAgainstASample(double[] control, double[] fewTest)
 	{
-		if (sample.length < 2) return new Tuple(Double.NaN, Double.NaN);
+		if (control.length < 2) return new Tuple(Double.NaN, Double.NaN);
 
-		TDistribution dist = new TDistribution(sample.length - 1);
-		double t = (Summary.mean(few) - Summary.mean(sample)) / (Summary.stdev(sample) / Math.sqrt(few.length));
+		TDistribution dist = new TDistribution(control.length - 1);
+		double t = (Summary.mean(fewTest) - Summary.mean(control)) / (Summary.stdev(control) / Math.sqrt(fewTest.length));
 
 		double cdf = dist.cumulativeProbability(t);
 		double p = cdfToPval(cdf);
@@ -153,32 +166,50 @@ public class TTest
 
 	public static void main(String[] args)
 	{
-		Random r = new Random();
-		List<Double> pvals = new ArrayList<>();
+		checkPaired();
 
-		for (int i = 0; i < 1000; i++)
+
+//		Random r = new Random();
+//		List<Double> pvals = new ArrayList<>();
+//
+//		for (int i = 0; i < 1000; i++)
+//		{
+//			List<List<Double>> list = new ArrayList<>();
+//			for (int j = 0; j < 2; j++)
+//			{
+//				list.add(new ArrayList<>());
+//			}
+//
+//			for (int j = 0; j < 10; j++)
+//			{
+//				list.get(r.nextInt(list.size())).add(r.nextGaussian());
+////				list.get(r.nextDouble() < 0.2 ? 0 : 1).add(r.nextDouble());
+//			}
+//
+//			List<double[]> groups = new ArrayList<>();
+//			for (List<Double> doubles : list)
+//			{
+//				groups.add(ArrayUtil.toArray(doubles));
+//			}
+//			double p = getPValOfMeanDifference(groups.get(0), groups.get(1));
+//			if (!Double.isNaN(p)) pvals.add(p);
+//		}
+//
+//		UniformityChecker.plot(pvals);
+	}
+
+	public static void checkPaired()
+	{
+		double[] v0 = new double[]{6001.3, 7627.7, 5639.4, 7628.5};
+		double[] v1 = new double[]{24.5, 27.2, 25.2, 26.5};
+
+		for (int i = 0; i < v0.length; i++)
 		{
-			List<List<Double>> list = new ArrayList<>();
-			for (int j = 0; j < 2; j++)
-			{
-				list.add(new ArrayList<>());
-			}
-
-			for (int j = 0; j < 10; j++)
-			{
-				list.get(r.nextInt(list.size())).add(r.nextGaussian());
-//				list.get(r.nextDouble() < 0.2 ? 0 : 1).add(r.nextDouble());
-			}
-
-			List<double[]> groups = new ArrayList<>();
-			for (List<Double> doubles : list)
-			{
-				groups.add(ArrayUtil.toArray(doubles));
-			}
-			double p = getPValOfMeanDifference(groups.get(0), groups.get(1));
-			if (!Double.isNaN(p)) pvals.add(p);
+			v0[i] = Math.log(v0[i]);
+			v1[i] = Math.log(v1[i]);
 		}
 
-		UniformityChecker.plot(pvals);
+		System.out.println("TestUtils.t(v0, v1) = " + TestUtils.t(v1, v0));
+		System.out.println("TestUtils.ttest(v0, v1) = " + TestUtils.tTest(v0, v1));
 	}
 }

@@ -94,6 +94,11 @@ public class XYPlot extends JPanel implements MouseListener, MouseMotionListener
 		names.forEach(name -> colors.put(name, color));
 	}
 
+	public void addPointColors(Map<String, Color> colorMap)
+	{
+		colors.putAll(colorMap);
+	}
+
 	public void setBuffer(int buffer)
 	{
 		this.buffer = buffer;

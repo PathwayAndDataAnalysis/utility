@@ -207,6 +207,14 @@ public class GraphList extends Graph
 		}
 	}
 
+	public void cropToNeighborhood(Collection<String> symbols)
+	{
+		for (Graph graph : graphs)
+		{
+			graph.cropToNeighborhood(symbols);
+		}
+	}
+
 	protected Set<String> getRelationStrings()
 	{
 		Set<String> set = new HashSet<String>();

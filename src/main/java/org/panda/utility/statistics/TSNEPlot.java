@@ -10,6 +10,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.*;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Ozgun Babur
@@ -28,9 +30,11 @@ public class TSNEPlot extends JFrame implements ActionListener
 	JButton makeControlButton;
 	JButton makeTestButton;
 	JButton printGroupsButton;
-	JButton showPCAButton;
+	JButton sitchPlotButton;
 	JButton copyWindowButton;
 	JButton copyPlotButton;
+	JButton nextColorButton;
+	JButton prevColorButton;
 
 	XYPlot plot;
 	Map<String, double[]> data;
@@ -44,8 +48,16 @@ public class TSNEPlot extends JFrame implements ActionListener
 	JPanel buttonsPanel;
 	JPanel controlPanel;
 
+	CurrentGraphType graphType;
+
+	Map<String, Map<String, Color>> colorSeriesMap;
+	List<String> colorNames;
+	int colorIndex;
+
 	public TSNEPlot(Map<String, double[]> data) throws HeadlessException
 	{
+		graphType = CurrentGraphType.PCA_GRAPH;
+
 		this.data = data;
 		perplexity = Math.max(1, (data.size()-1) / 6);
 		maxIter = 10000;
@@ -148,9 +160,9 @@ public class TSNEPlot extends JFrame implements ActionListener
 		printGroupsButton.addActionListener(this);
 		buttonsPanel.add(printGroupsButton, con);
 		con.gridy = 3;
-		showPCAButton = new JButton("Plot PCA");
-		showPCAButton.addActionListener(this);
-		buttonsPanel.add(showPCAButton, con);
+		sitchPlotButton = new JButton("Plot TSNE");
+		sitchPlotButton.addActionListener(this);
+		buttonsPanel.add(sitchPlotButton, con);
 		con.gridx = 1;
 		con.gridy = 0;
 		copyWindowButton = new JButton("Copy window");
@@ -161,15 +173,20 @@ public class TSNEPlot extends JFrame implements ActionListener
 		copyPlotButton.addActionListener(this);
 		buttonsPanel.add(copyPlotButton, con);
 		con.gridy = 2;
-		buttonsPanel.add(new JButton(), con);
+		nextColorButton = new JButton();
+		nextColorButton.addActionListener(this);
+		buttonsPanel.add(nextColorButton, con);
 		con.gridy = 3;
-		buttonsPanel.add(new JButton(), con);
+		prevColorButton = new JButton();
+		prevColorButton.addActionListener(this);
+		buttonsPanel.add(prevColorButton, con);
 
 		controlPanel.add(buttonsPanel, BorderLayout.EAST);
 
 		this.getContentPane().add(controlPanel, BorderLayout.NORTH);
 
-		Map<String, double[]> points = TSNE.run(data, perplexity, theta, maxIter, initDims);
+//		Map<String, double[]> points = TSNE.run(data, perplexity, theta, maxIter, initDims);
+		Map<String, double[]> points = PCA.run(data);
 		plot = new XYPlot(points);
 
 		this.getContentPane().add(plot, BorderLayout.CENTER);
@@ -219,9 +236,45 @@ public class TSNEPlot extends JFrame implements ActionListener
 		}
 	}
 
+	public void setPointColors(Map<String, Color> colorMap)
+	{
+		plot.addPointColors(colorMap);
+	}
+
+	public void setPointColorSeries(Map<String, Map<String, Color>> colorSeriesMap)
+	{
+		this.colorSeriesMap = colorSeriesMap;
+		colorNames = new ArrayList<>(colorSeriesMap.keySet());
+		nextColorButton.setText("Next color");
+		prevColorButton.setText("Prev color");
+		colorIndex = 0;
+		updateColors();
+		updateColorNameDisplay(colorNames.get(colorIndex));
+	}
+
+	private void updateColors()
+	{
+		plot.addPointColors(colorSeriesMap.get(colorNames.get(colorIndex)));
+	}
+
+	private void updateColorNameDisplay(String colorName)
+	{
+		String title = getTitle();
+		String indicator = " -- color: ";
+		if (title.contains(indicator))
+		{
+			title = title.substring(0, title.indexOf(indicator));
+		}
+		title += indicator + colorName;
+		setTitle(title);
+	}
+
 	protected void updateGraph()
 	{
-		Map<String, double[]> points = TSNE.run(data, perplexity, theta, maxIter, initDims);
+		Map<String, double[]> points = graphType == CurrentGraphType.TSNE_GRAPH ?
+			TSNE.run(data, perplexity, theta, maxIter, initDims) :
+			PCA.run(data);
+
 		plot.updatePoints(points);
 		plot.repaint();
 	}
@@ -291,11 +344,19 @@ public class TSNEPlot extends JFrame implements ActionListener
 				selected.forEach(System.out::println);
 			}
 		}
-		else if (e.getSource() == showPCAButton)
+		else if (e.getSource() == sitchPlotButton)
 		{
-			Map<String, double[]> points = PCA.run(data);
-			plot.updatePoints(points);
-			plot.repaint();
+			if (this.graphType == CurrentGraphType.PCA_GRAPH)
+			{
+				this.graphType = CurrentGraphType.TSNE_GRAPH;
+				sitchPlotButton.setText("Show PCA");
+			}
+			else
+			{
+				this.graphType = CurrentGraphType.PCA_GRAPH;
+				sitchPlotButton.setText("Show TSNE");
+			}
+			updateGraph();
 		}
 		else if (e.getSource() == copyWindowButton)
 		{
@@ -307,5 +368,25 @@ public class TSNEPlot extends JFrame implements ActionListener
 		{
 			GUIUtil.saveImageToClipboard(plot);
 		}
+		else if (e.getSource() == nextColorButton && colorSeriesMap != null)
+		{
+			colorIndex = (colorIndex + 1) % colorNames.size();
+			updateColors();
+			updateColorNameDisplay(colorNames.get(colorIndex));
+			updateGraph();
+		}
+		else if (e.getSource() == prevColorButton && colorSeriesMap != null)
+		{
+			colorIndex = colorIndex == 0 ? colorNames.size() - 1 : colorIndex - 1;
+			updateColors();
+			updateColorNameDisplay(colorNames.get(colorIndex));
+			updateGraph();
+		}
+	}
+
+	enum CurrentGraphType
+	{
+		PCA_GRAPH,
+		TSNE_GRAPH
 	}
 }
