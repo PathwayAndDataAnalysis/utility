@@ -424,10 +424,10 @@ public class FileUtil
 	 * @param colIndex starts from 0
 	 * @return
 	 */
-	public static Set<String> getTermsInTabDelimitedColumn(String filename, int colIndex) { try
+	public static Set<String> getTermsInTabDelimitedColumn(String filename, int colIndex, int skip) { try
 	{
-		return Files.lines(Paths.get(filename)).skip(1).map(line -> line.split("\t")).filter(token -> token.length > colIndex)
-			.map(t -> t[colIndex]).collect(Collectors.toSet());
+		return Files.lines(Paths.get(filename)).skip(skip).map(line -> line.split("\t"))
+			.filter(token -> token.length > colIndex).map(t -> t[colIndex]).collect(Collectors.toSet());
 	}
 	catch (IOException e){throw new RuntimeException(e);}}
 
@@ -529,6 +529,11 @@ public class FileUtil
 		{
 			throw new RuntimeException(e);
 		}
+	}
+
+	public static boolean mkdirs(String path)
+	{
+		return (new File(path)).mkdirs();
 	}
 
 	//----- Section: XLSX related --------------------------------------------------------------------------------------
@@ -686,8 +691,8 @@ public class FileUtil
 
 //		System.out.println(countLines("/home/babur/Projects/utility/PNNL-ovarian-correlations.txt"));
 //		printLines("/home/babur/Documents/Analyses/TF-activity/MultipleMyeloma/Filtered_GSE47552_series_matrix.txt", 20000, 20008);
-		printLines("/home/ozgun/Analyses/CausalPath-paper/causal-priors.txt", "CEBPA\tdown", 1000);
-//		printLines("/home/ozgun/Code/repo/resource-files/iPTMNet.txt", 0, 3);
+		printLines("/home/ozgun/Downloads/Homo_sapiens.GRCh37.87.gtf", "\"TP53\"", 100);
+//		printLines("/home/ozgun/Downloads/Homo_sapiens.GRCh37.87.gtf", 0, 100);
 
 //		exciseFileToLines("/home/babur/Documents/PC/SignedPC-p2-e2.sif", "/home/babur/Documents/Papers/Authoring/CausalPath/temp.sif", line -> line.contains("http://identifiers.org/reactome/R-HSA-1183067"));
 

@@ -1,5 +1,7 @@
 package org.panda.utility.statistics;
 
+import org.apache.commons.math3.distribution.BinomialDistribution;
+
 import java.util.ArrayList;
 import java.util.List;
 

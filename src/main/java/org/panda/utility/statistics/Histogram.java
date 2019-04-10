@@ -23,6 +23,7 @@ public class Histogram
 	private double min;
 	private double max;
 	private boolean borderAtZero;
+	private boolean useLowerBorderForPrinting = false;
 
 	private String name;
 
@@ -53,6 +54,11 @@ public class Histogram
 	public void setBorderAtZero(boolean borderAtZero)
 	{
 		this.borderAtZero = borderAtZero;
+	}
+
+	public void setUseLowerBorderForPrinting(boolean useLowerBorderForPrinting)
+	{
+		this.useLowerBorderForPrinting = useLowerBorderForPrinting;
 	}
 
 	public void countAll(double[] ns)
@@ -107,6 +113,10 @@ public class Histogram
 	private String getIntervalString(int bin)
 	{
 		double center = getX(bin);
+		if (useLowerBorderForPrinting)
+		{
+			return String.valueOf(accurate(center - (range / 2)));
+		}
 		return "[" + accurate(center - (range / 2)) + ", " + accurate(center + (range / 2)) + ")";
 	}
 
@@ -193,7 +203,7 @@ public class Histogram
 	{
 		int a = getValue(x);
 
-		return a / (total * range);
+		return a / (double)(total);
 	}
 
 	public double[] getMinMax()
@@ -253,6 +263,7 @@ public class Histogram
 			t += c;
 		}
 		assert t == total : "total = " + total + " found = " + t;
+		System.out.println("total = " + total);
 
 		if (binMap.isEmpty()) return;
 
@@ -454,7 +465,14 @@ public class Histogram
 
 		for (double x = minmax[0]; x < minmax[1] + (range / 2); x += range)
 		{
-			System.out.println(x + sep + getDensity(x));
+			if (useLowerBorderForPrinting)
+			{
+				System.out.println((x - (range / 2)) + sep + getDensity(x));
+			}
+			else
+			{
+				System.out.println(x + sep + getDensity(x));
+			}
 		}
 	}
 

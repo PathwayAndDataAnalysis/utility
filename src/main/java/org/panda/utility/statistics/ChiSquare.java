@@ -122,7 +122,7 @@ public class ChiSquare
 
 	public static void main(String[] args)
 	{
-		System.out.println(testDependence(new long[][]{{50, 49}, {50, 50}}));
+		System.out.println(testDependence(new long[][]{{55, 1621-50}, {16, 516-16}}));
 	}
 
 	public static void checkUniformity()

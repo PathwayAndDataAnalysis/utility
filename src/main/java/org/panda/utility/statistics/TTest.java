@@ -166,36 +166,42 @@ public class TTest
 
 	public static void main(String[] args)
 	{
-		checkPaired();
+//		checkPaired();
 
 
-//		Random r = new Random();
-//		List<Double> pvals = new ArrayList<>();
-//
-//		for (int i = 0; i < 1000; i++)
-//		{
-//			List<List<Double>> list = new ArrayList<>();
-//			for (int j = 0; j < 2; j++)
-//			{
-//				list.add(new ArrayList<>());
-//			}
-//
+		Random r = new Random();
+		List<Double> pvals = new ArrayList<>();
+
+		for (int i = 0; i < 1000; i++)
+		{
+			List<List<Double>> list = new ArrayList<>();
+			for (int j = 0; j < 2; j++)
+			{
+				list.add(new ArrayList<>());
+			}
+
 //			for (int j = 0; j < 10; j++)
 //			{
 //				list.get(r.nextInt(list.size())).add(r.nextGaussian());
 ////				list.get(r.nextDouble() < 0.2 ? 0 : 1).add(r.nextDouble());
 //			}
-//
-//			List<double[]> groups = new ArrayList<>();
-//			for (List<Double> doubles : list)
-//			{
-//				groups.add(ArrayUtil.toArray(doubles));
-//			}
-//			double p = getPValOfMeanDifference(groups.get(0), groups.get(1));
-//			if (!Double.isNaN(p)) pvals.add(p);
-//		}
-//
-//		UniformityChecker.plot(pvals);
+
+			list.get(0).add(r.nextGaussian());
+			list.get(0).add(r.nextGaussian());
+			list.get(1).add(r.nextGaussian());
+			list.get(1).add(r.nextGaussian());
+			list.get(1).add(r.nextGaussian());
+
+			List<double[]> groups = new ArrayList<>();
+			for (List<Double> doubles : list)
+			{
+				groups.add(ArrayUtil.toArray(doubles));
+			}
+			double p = getPValOfMeanDifference(groups.get(0), groups.get(1));
+			if (!Double.isNaN(p)) pvals.add(p);
+		}
+
+		UniformityChecker.plot(pvals);
 	}
 
 	public static void checkPaired()

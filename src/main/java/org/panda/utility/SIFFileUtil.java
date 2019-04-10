@@ -140,6 +140,37 @@ public class SIFFileUtil
 		writer.close();
 	}
 
+	public static Set<String> getGenesInSIFFile(String file) throws IOException
+	{
+		Set<String> genes = new HashSet<>();
+		Files.lines(Paths.get(file)).map(l -> l.split("\t")).filter(t -> t.length > 0 && t[0].length() > 0)
+			.forEach(t ->
+			{
+				genes.add(t[0]);
+				if (t.length > 2) genes.add(t[2]);
+			});
+		return genes;
+	}
 
+	public static int[] getNodeAndEdgeCounts(String sifFile) throws IOException
+	{
+		Set<String> edges = new HashSet<>();
+		Set<String> nodes = new HashSet<>();
+
+		Files.lines(Paths.get(sifFile)).map(l -> l.split("\t")).forEach(t ->
+		{
+			if (t.length > 2)
+			{
+				edges.add(t[0] + " " + t[1] + " " + t[2]);
+				nodes.add(t[2]);
+			}
+			if (t.length > 0 && !t[0].isEmpty())
+			{
+				nodes.add(t[0]);
+			}
+		});
+
+		return new int[]{nodes.size(), edges.size()};
+	}
 
 }

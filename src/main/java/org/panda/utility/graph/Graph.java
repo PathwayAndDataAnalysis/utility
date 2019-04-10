@@ -7,6 +7,7 @@ import org.panda.utility.graph.query.QueryGraphObject;
 import org.panda.utility.statistics.FDR;
 import org.panda.utility.statistics.FishersExactTest;
 import org.panda.utility.statistics.Histogram;
+import org.panda.utility.statistics.Summary;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -358,6 +359,18 @@ public abstract class Graph implements Serializable
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	protected double getAverageDegree(Map<String, Set<String>> map)
+	{
+		Set<String> nodes = getSymbols();
+		List<Double> degrees = new ArrayList<>();
+		for (String node : nodes)
+		{
+			if (map.containsKey(node)) degrees.add((double) map.get(node).size());
+			degrees.add(0D);
+		}
+		return Summary.mean(degrees.toArray(new Double[0]));
 	}
 
 	/**

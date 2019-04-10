@@ -7,6 +7,7 @@ import org.panda.utility.graph.query.QueryGraphObject;
 import org.panda.utility.statistics.FDR;
 import org.panda.utility.statistics.FishersExactTest;
 import org.panda.utility.statistics.Histogram;
+import org.panda.utility.statistics.Summary;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -493,6 +494,17 @@ public class DirectedGraph extends Graph
 
 		System.out.println(syms.size() + " genes (source: " + dwMap.keySet().size() + ", " +
 			"target: " + upMap.keySet().size() + ") and " + edgeCnt + " edges");
+		System.out.println("Avg in-degree: " + getAverageInDegree() + ", Avg out-degree: " + getAverageOutDegree());
+	}
+
+	public double getAverageInDegree()
+	{
+		return getAverageDegree(upMap);
+	}
+
+	public double getAverageOutDegree()
+	{
+		return getAverageDegree(dwMap);
 	}
 
 	public void merge(DirectedGraph graph)

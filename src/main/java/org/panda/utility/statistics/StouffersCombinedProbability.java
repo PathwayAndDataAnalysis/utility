@@ -45,11 +45,14 @@ public class StouffersCombinedProbability
 
 	public static void main(String[] args)
 	{
-		justCheckFewNumbers();
+//		justCheckFewNumbers();
 
-		double[] r = combineP2Tailed(new double[]{0.01, 0.01}, new int[]{-1, -1});
+//		double[] r = combineP2Tailed(new double[]{0.01, 0.01}, new int[]{-1, -1});
+//		System.out.println(Arrays.toString(r));
 
-		System.out.println(Arrays.toString(r));
+		double p = combineP(0.001, 0.2);
+		System.out.println("p = " + p);
+
 
 //		checkUniformity();
 	}

@@ -75,7 +75,7 @@ public class Progress
 
 		if (showRemainingTime)
 		{
-//			if (p > 0)
+			if (p > 0)
 			{
 				printWholeProgress();
 				System.out.print(" " + Kronometre.getPrintable(estimateRemainingTime()));

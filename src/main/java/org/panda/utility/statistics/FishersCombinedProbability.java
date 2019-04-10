@@ -126,7 +126,7 @@ public class FishersCombinedProbability
 
 	public static void justCheck()
 	{
-		System.out.println(combine(0.001, 0.999));
+		System.out.println(combine(0.001, 0.2));
 		System.exit(0);
 	}
 	public static void graphIt()

@@ -1,6 +1,7 @@
 package org.panda.utility;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by babur on 4/18/16.
@@ -65,6 +66,11 @@ public class CollectionUtil
 
 	public static <T extends Comparable> void printVennSets(Collection<T>... col)
 	{
+		printVennSets(Integer.MAX_VALUE, col);
+	}
+
+	public static <T extends Comparable> void printVennSets(int maxMembersToPrint, Collection<T>... col)
+	{
 		int[] cnt = getVennCounts(col);
 		Set<T>[] venn = getVennSets(col);
 		String[] name = getSetNamesArray(col.length);
@@ -74,7 +80,12 @@ public class CollectionUtil
 			List<T> list = new ArrayList<>(venn[i]);
 			Collections.sort(list);
 
-			System.out.print(name[i] + "\t" + cnt[i] + "\t" + list);
+			System.out.print(name[i] + "\t" + cnt[i]);
+
+			if (list.size() <= maxMembersToPrint)
+			{
+				System.out.print("\t" + list);
+			}
 
 			if (i < col.length)
 			{
@@ -304,4 +315,8 @@ public class CollectionUtil
 		return (int) list.stream().filter(Arrays.asList(query)::contains).count();
 	}
 
+	public static List<Double> convertIntegerListToDouble(List<Integer> intList)
+	{
+		return intList.stream().map(i -> (double) i).collect(Collectors.toList());
+	}
 }

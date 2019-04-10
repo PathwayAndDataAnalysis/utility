@@ -169,6 +169,12 @@ public class UndirectedGraph extends Graph
 		int edgeCnt = getEdgeCount();
 
 		System.out.println(syms.size() + " genes and " + edgeCnt + " edges");
+		System.out.println("Avg degree: " + getAverageDegree());
+	}
+
+	public double getAverageDegree()
+	{
+		return getAverageDegree(ppMap);
 	}
 
 	public void merge(UndirectedGraph graph)

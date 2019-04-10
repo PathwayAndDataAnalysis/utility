@@ -495,6 +495,17 @@ public class ArrayUtil
 		return sb.toString();
 	}
 
+	public static String merge(String delim, String[] array)
+	{
+		if (array.length == 0) return "";
+
+		StringBuilder sb = new StringBuilder(array[0]);
+
+		IntStream.range(1, array.length).forEach(i -> sb.append(delim).append(array[i]));
+
+		return sb.toString();
+	}
+
 	public static int indexOf(String[] array, String... query)
 	{
 		for (int i = 0; i < array.length; i++)
@@ -550,6 +561,7 @@ public class ArrayUtil
 		}
 		return arr;
 	}
+
 	public static double[] convertToBasicDoubleArray(List<Double> list)
 	{
 		double[] arr = new double[list.size()];
@@ -558,6 +570,26 @@ public class ArrayUtil
 			arr[i] = list.get(i);
 		}
 		return arr;
+	}
+
+	public static double[] convertIntListToBasicDoubleArray(List<Integer> list)
+	{
+		double[] arr = new double[list.size()];
+		for (int i = 0; i < arr.length; i++)
+		{
+			arr[i] = list.get(i);
+		}
+		return arr;
+	}
+
+	public static boolean[] convertToBasicBooleanArray(Boolean[] array)
+	{
+		boolean[] b = new boolean[array.length];
+		for (int i = 0; i < b.length; i++)
+		{
+			b[i] = array[i];
+		}
+		return b;
 	}
 
 	public static double vectorMultiply(double[] v1, double[] v2)
