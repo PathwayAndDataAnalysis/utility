@@ -10,6 +10,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import java.io.*;
 import java.nio.channels.FileChannel;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -524,6 +525,18 @@ public class FileUtil
 		try
 		{
 			return Files.lines(Paths.get(filename));
+		}
+		catch (IOException e)
+		{
+			throw new RuntimeException(e);
+		}
+	}
+
+	public static Stream<String> lines(Path path)
+	{
+		try
+		{
+			return Files.lines(path);
 		}
 		catch (IOException e)
 		{
