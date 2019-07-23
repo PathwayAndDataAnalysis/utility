@@ -555,5 +555,9 @@ public abstract class Graph implements Serializable
 
 	public static void main(String[] args) throws FileNotFoundException
 	{
+		String type = "downregulates-expression";
+		DirectedGraph dg = new DirectedGraph(type, type);
+		dg.load("/home/ozgun/Analyses/CausalPath-paper/causal-priors.txt", Collections.singleton(type));
+		dg.printStats();
 	}
 }

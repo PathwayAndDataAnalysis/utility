@@ -433,6 +433,19 @@ public class FileUtil
 	catch (IOException e){throw new RuntimeException(e);}}
 
 	/**
+	 * Collects the encountered string in the given column of the tab delimited file into a set.
+	 * @param filename
+	 * @param colIndex starts from 0
+	 * @return
+	 */
+	public static List<String> getTermsInTabDelimitedColumnOrdered(String filename, int colIndex, int skip) { try
+	{
+		return Files.lines(Paths.get(filename)).skip(skip).map(line -> line.split("\t"))
+			.filter(token -> token.length > colIndex).map(t -> t[colIndex]).collect(Collectors.toList());
+	}
+	catch (IOException e){throw new RuntimeException(e);}}
+
+	/**
 	 * Collects the rows in the file in a Set of String.
 	 * @param filename
 	 */
