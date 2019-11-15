@@ -373,7 +373,12 @@ public class DirectedGraph extends Graph
 
 		return syms;
 	}
-	
+
+	public boolean hasNode(String name)
+	{
+		return upMap.containsKey(name) || dwMap.containsKey(name);
+	}
+
 	class CommPoint implements Comparable
 	{
 		String s;

@@ -122,7 +122,8 @@ public class ChiSquare
 
 	public static void main(String[] args)
 	{
-		System.out.println(testDependence(new long[][]{{55, 1621-50}, {16, 516-16}}));
+//		System.out.println(testDependence(new long[][]{{55, 1621-50}, {16, 516-16}}));
+		checkUniformity();
 	}
 
 	public static void checkUniformity()
@@ -144,7 +145,8 @@ public class ChiSquare
 			}
 
 			int[] c = convertContingencyTableToOverlap(l);
-			double p = testExclusivity(c[0], c[1], c[2], c[3]);
+			double p = testEnrichment(c[0], c[1], c[2], c[3]);
+//			double p = testExclusivity(c[0], c[1], c[2], c[3]);
 //			double p = testDependence(l);
 			if (!Double.isNaN(p)) pvals.add(p);
 		}
