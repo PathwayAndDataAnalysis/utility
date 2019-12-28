@@ -106,7 +106,10 @@ public class FishersExactTest
 
 	public static void main(String[] args)
 	{
-		System.out.println(calcEnrichmentPval(213, 61, 14, 44));
+		System.out.println(calcEnrichmentPval(100, 30, 20, 14));
+		System.out.println(ChiSquare.testEnrichment(100, 30, 20, 14));
+//		System.out.println(calcPositiveDepPval(64, 6, 16, 14));
+
 	}
 
 	public static double calcCoocPval(boolean[] b1, boolean[] b2)
