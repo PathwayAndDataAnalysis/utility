@@ -683,6 +683,30 @@ public class DirectedGraph extends Graph
 		return dwMap.containsKey(source) && dwMap.get(source).contains(target);
 	}
 
+	public UndirectedGraphWithEdgeWeights getDownstreamSimilarityGraph()
+	{
+		UndirectedGraphWithEdgeWeights graph = new UndirectedGraphWithEdgeWeights();
+
+		for (String s1 : getOneSideSymbols(true))
+		{
+			Set<String> d1 = getDownstream(s1);
+
+			for (String s2 : getOneSideSymbols(true))
+			{
+				if (s1.compareTo(s2) < 0)
+				{
+					Set<String> d2 = getDownstream(s2);
+
+					double weight = CollectionUtil.getJaccardSimilarity(d1, d2);
+
+					if (weight > 0) graph.putRelation(s1, s2, weight);
+				}
+			}
+		}
+
+		return graph;
+	}
+
 	public static void main(String[] args) throws FileNotFoundException
 	{
 	}
