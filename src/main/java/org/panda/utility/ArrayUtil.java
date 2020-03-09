@@ -421,6 +421,42 @@ public class ArrayUtil
 			.mapToDouble(i -> vals[i]).toArray();
 	}
 
+	/**
+	 * Selects non NaN members of the select array but. Makes sure that the paired array is also non null at the
+	 * matching position. That matching position is not determined by its index, but by the rank of "true" values.
+	 */
+	public static double[] subset(double[] vals, boolean[] select, boolean[] pairedNotNan)
+	{
+		if (vals.length != select.length) throw new IllegalArgumentException("Parameter array lengths must be equal.");
+		if (pairedNotNan.length != select.length) throw new IllegalArgumentException("All parameter array lengths must be equal.");
+
+		// generate mapping array
+		int[] m = new int[vals.length];
+		Arrays.fill(m, -1);
+		int a = -1;
+		int b = -1;
+		do
+		{
+			a++;
+			b++;
+			while (a < select.length && !select[a]) a++;
+			while (b < select.length && !pairedNotNan[b]) b++;
+
+			if (a < select.length && b < select.length) m[a] = b;
+		}
+		while (a < select.length && b < select.length);
+
+//		for (int i = 0; i < select.length; i++)
+//		{
+//			if (select[i]) assert m[i] >= 0;
+//			else assert m[i] < 0;
+//		}
+
+		return IntStream.range(0, vals.length)
+			.filter(i -> select[i] && !Double.isNaN(vals[i]) && !Double.isNaN(vals[m[i]]))
+			.mapToDouble(i -> vals[i]).toArray();
+	}
+
 	public static int[] subset(int[] vals, boolean[] select)
 	{
 		if (vals.length != select.length) throw new IllegalArgumentException("Parameter array lengths must be equal.");
@@ -509,6 +545,18 @@ public class ArrayUtil
 	public static int indexOf(String[] array, String... query)
 	{
 		for (int i = 0; i < array.length; i++)
+		{
+			for (String q : query)
+			{
+				if (array[i].equals(q)) return i;
+			}
+		}
+		return -1;
+	}
+
+	public static int lastIndexOf(String[] array, String... query)
+	{
+		for (int i = array.length - 1; i >= 0; i--)
 		{
 			for (String q : query)
 			{

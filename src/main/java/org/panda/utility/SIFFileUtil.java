@@ -179,4 +179,9 @@ public class SIFFileUtil
 		return new int[]{nodes.size(), edges.size()};
 	}
 
+	public static Set<String> getRelationsAsString(String file) throws IOException
+	{
+		return Files.lines(Paths.get(file)).map(l -> l.split("\t")).filter(t -> t.length > 2)
+			.map(t -> ArrayUtil.getString(" ", t[0], t[1], t[2])).collect(Collectors.toSet());
+	}
 }
