@@ -1,5 +1,7 @@
 package org.panda.utility.statistics;
 
+import org.panda.utility.Tuple;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -18,7 +20,7 @@ public class StouffersCombinedProbability
 		return ZScore.zScoreToPercentile(zC);
 	}
 
-	public static double[] combineP2Tailed(double[] p, int[] s)
+	public static Tuple combineP2Tailed(double[] p, int[] s)
 	{
 		double[] pp = new double[p.length];
 
@@ -40,7 +42,7 @@ public class StouffersCombinedProbability
 
 		double pC2t = pC * 2;
 
-		return new double[]{pC2t, sC};
+		return new Tuple(sC, pC2t);
 	}
 
 	public static void main(String[] args)

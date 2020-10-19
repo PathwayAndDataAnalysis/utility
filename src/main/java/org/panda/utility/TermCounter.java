@@ -164,4 +164,14 @@ public class TermCounter
 			return count + "\t" + term;
 		}
 	}
+
+	public Map<String, Integer> getCountMap()
+	{
+		Map<String, Integer> map = new HashMap<>();
+		for (Item item : termMap.values())
+		{
+			map.put(item.term, item.count);
+		}
+		return map;
+	}
 }

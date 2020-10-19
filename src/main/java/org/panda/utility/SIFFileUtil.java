@@ -184,4 +184,21 @@ public class SIFFileUtil
 		return Files.lines(Paths.get(file)).map(l -> l.split("\t")).filter(t -> t.length > 2)
 			.map(t -> ArrayUtil.getString(" ", t[0], t[1], t[2])).collect(Collectors.toSet());
 	}
+
+	public static Set<String> getNeighborNodes(String sifFile, Collection<String> seed, StreamDirection d)
+	{
+		Set<String> neigh = new HashSet<>();
+		FileUtil.lines(sifFile).map(l -> l.split("\t"))
+			.filter(t -> t.length > 2)
+			.filter(t -> (d == StreamDirection.DOWNSTREAM && seed.contains(t[0])) ||
+				(d == StreamDirection.UPSTREAM && seed.contains(t[2])) ||
+				(d == StreamDirection.BOTHSTREAM && (seed.contains(t[0]) || seed.contains(t[2])))).forEach(t ->
+		{
+			neigh.add(t[0]);
+			neigh.add(t[2]);
+		});
+
+		neigh.removeAll(seed);
+		return neigh;
+	}
 }

@@ -531,7 +531,7 @@ public class ArrayUtil
 		return sb.toString();
 	}
 
-	public static String merge(String delim, String[] array)
+	public static String merge(String delim, String... array)
 	{
 		if (array.length == 0) return "";
 

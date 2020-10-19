@@ -445,6 +445,15 @@ public class FileUtil
 	}
 	catch (IOException e){throw new RuntimeException(e);}}
 
+	public static Map<String, String> readMap(String filename, String delim, String keyColumn, String valueColumn) { try
+	{
+		String[] header = Files.lines(Paths.get(filename)).findFirst().get().split(delim);
+		int keyInd = ArrayUtil.indexOf(header, keyColumn);
+		int valueInd = ArrayUtil.indexOf(header, valueColumn);
+		return Files.lines(Paths.get(filename)).skip(1).map(l -> l.split(delim)).collect(Collectors.toMap(t -> t[keyInd], t -> t[valueInd]));
+	}
+	catch (IOException e){throw new RuntimeException(e);}}
+
 	/**
 	 * Collects the rows in the file in a Set of String.
 	 * @param filename
