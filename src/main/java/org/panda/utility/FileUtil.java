@@ -571,6 +571,9 @@ public class FileUtil
 		return (new File(path)).mkdirs();
 	}
 
+	/**
+	 * Checks if the file contains any non-whitespace character.
+	 */
 	public static boolean isEmpty(String file)
 	{
 		return lines(file).map(String::trim).allMatch(String::isEmpty);
