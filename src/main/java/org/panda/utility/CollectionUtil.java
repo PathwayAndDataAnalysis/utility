@@ -293,6 +293,20 @@ public class CollectionUtil
 		return set;
 	}
 
+	/**
+	 * This is the ratio of the size of the union set to thesum of individual set sizes.
+	 */
+	public static <T> double getOverlapShrinkage(Collection<T>... col)
+	{
+		Set<T> union = getUnion(col);
+		double total = 0;
+		for (Collection<T> c : col)
+		{
+			total += c.size();
+		}
+		return union.size() / total;
+	}
+
 	public static int maxIntInList(List<Integer> list)
 	{
 		List<Integer> m = new ArrayList<>(1);

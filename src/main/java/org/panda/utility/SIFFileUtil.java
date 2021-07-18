@@ -1,5 +1,6 @@
 package org.panda.utility;
 
+import org.panda.utility.graph.DirectedGraph;
 import org.panda.utility.graph.UndirectedGraph;
 
 import java.io.BufferedWriter;
@@ -126,6 +127,49 @@ public class SIFFileUtil
 		writer.close();
 	}
 
+	public static void writeSubgraph(String sifFile, DirectedGraph subgraph, String outFile) throws IOException
+	{
+		BufferedWriter writer = Files.newBufferedWriter(Paths.get(outFile));
+
+		Files.lines(Paths.get(sifFile)).forEach(l ->
+		{
+			String[] t = l.split("\t");
+
+			if (t.length > 2)
+			{
+				if (subgraph.hasRelation(t[0], t[2]))
+				{
+					FileUtil.lnwrite(l, writer);
+				}
+			}
+		});
+
+		writer.close();
+	}
+
+	/**
+	 * The keep set needs to contain stings where source, relations and target are tab-separated.
+	 */
+	public static void writeSubgraph(String sifFile, Set<String> keep, String outFile) throws IOException
+	{
+		BufferedWriter writer = Files.newBufferedWriter(Paths.get(outFile));
+
+		Files.lines(Paths.get(sifFile)).forEach(l ->
+		{
+			String[] t = l.split("\t");
+
+			if (t.length > 2)
+			{
+				if (keep.contains(t[0] + "\t" + t[1] + "\t" + t[2]))
+				{
+					FileUtil.lnwrite(l, writer);
+				}
+			}
+		});
+
+		writer.close();
+	}
+
 	public static void writeDownstream(String sifFile, Collection<String> seed, String outFile) throws IOException
 	{
 		BufferedWriter writer = Files.newBufferedWriter(Paths.get(outFile));
@@ -144,6 +188,19 @@ public class SIFFileUtil
 		});
 
 		writer.close();
+	}
+
+	public static DirectedGraph loadDirectedSingleGraph(String sifFile)
+	{
+		DirectedGraph graph = new DirectedGraph();
+		FileUtil.linesTabbed(sifFile).filter(t -> t.length > 2).forEach(t ->
+		{
+			if (!graph.hasRelation(t[0], t[2]))
+			{
+				graph.putRelation(t[0], t[2]);
+			}
+		});
+		return graph;
 	}
 
 	public static Set<String> getGenesInSIFFile(String file) throws IOException

@@ -11,26 +11,35 @@ import java.util.*;
  *
  * @author Ozgun Babur
  */
-public class PhosphoGraph extends DirectedGraph
+public class SiteSpecificGraph extends DirectedGraph
 {
 	protected Map<String, Map<String, Set<String>>> sites;
 
-	public PhosphoGraph(String name, String edgeType)
+	public SiteSpecificGraph(String name, String edgeType)
 	{
 		super(name, edgeType);
 		this.sites = new HashMap<>();
 	}
 
+	public void putRelation(String source, String target, Set<String> mediators, String siteString)
+	{
+		super.putRelation(source, target, mediators);
+
+		if (siteString != null && !siteString.isEmpty())
+		{
+			if (!sites.containsKey(source))
+				sites.put(source, new HashMap<>());
+			if (!sites.get(source).containsKey(target))
+				sites.get(source).put(target, new HashSet<>());
+
+			sites.get(source).get(target).addAll(Arrays.asList(siteString.split(";")));
+		}
+	}
+
 	public void putRelation(String source, String target, String mediatorsStr, String siteString)
 	{
-		super.putRelation(source, target, mediatorsStr);
-
-		if (!sites.containsKey(source))
-			sites.put(source, new HashMap<>());
-		if (!sites.get(source).containsKey(target))
-			sites.get(source).put(target, new HashSet<>());
-
-		sites.get(source).get(target).addAll(Arrays.asList(siteString.split(";")));
+		Set<String> meds = new HashSet<>(Arrays.asList(mediatorsStr.split(" |;")));
+		this.putRelation(source, target, meds, siteString);
 	}
 
 	public Set<String> getSites(String source, String target)
@@ -62,14 +71,27 @@ public class PhosphoGraph extends DirectedGraph
 		sites.get(source).get(target).add(site);
 	}
 
+	public void removeSite(String source, String target, String site)
+	{
+		if (!hasRelation(source, target))
+		{
+			throw new RuntimeException("Cannot remove site because the edge does not exist.");
+		}
+
+		if (sites.containsKey(source) && sites.get(source).containsKey(target))
+		{
+			sites.get(source).get(target).remove(site);
+		}
+	}
+
 	@Override
 	public void merge(DirectedGraph graph)
 	{
 		super.merge(graph);
 
-		if (graph instanceof PhosphoGraph)
+		if (graph instanceof SiteSpecificGraph)
 		{
-			PhosphoGraph pGraph = (PhosphoGraph) graph;
+			SiteSpecificGraph pGraph = (SiteSpecificGraph) graph;
 
 			for (String gene : pGraph.sites.keySet())
 			{

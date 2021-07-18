@@ -150,16 +150,21 @@ public abstract class Graph implements Serializable
 		this.mediators.clear();
 	}
 
-	public void putRelation(String source, String target, String mediatorsStr)
+	public void putRelation(String source, String target, Set<String> mediators)
 	{
 		putRelation(source, target);
 
-		List<String> meds = Arrays.asList(mediatorsStr.split(" |;"));
-		addMediators(source, target, meds);
-		if (isUndirected()) addMediators(target, source, meds);
+		addMediators(source, target, mediators);
+		if (isUndirected()) addMediators(target, source, mediators);
 	}
 
-	private void addMediators(String source, String target, List<String> meds)
+	public void putRelation(String source, String target, String mediatorsStr)
+	{
+		Set<String> meds = new HashSet<>(Arrays.asList(mediatorsStr.split(" |;")));
+		putRelation(source, target, meds);
+	}
+
+	public void addMediators(String source, String target, Collection<String> meds)
 	{
 		if (!mediators.containsKey(source))
 		{
@@ -174,7 +179,7 @@ public abstract class Graph implements Serializable
 		mediators.get(source).get(target).addAll(meds);
 	}
 
-	protected void removeMediators(String source, String target)
+	public void removeMediators(String source, String target)
 	{
 		if (mediators.containsKey(source))
 		{

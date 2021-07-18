@@ -360,7 +360,8 @@ public class Histogram
 
 		for (int i = min; i <= max; i++)
 		{
-			System.out.print((i * range) + "\t");
+//			System.out.print((i * range) + "\t");
+			System.out.print(getIntervalString(i) + "\t");
 
 			if (binMap.containsKey(i))
 			{
@@ -378,6 +379,61 @@ public class Histogram
 			else
 			{
 				System.out.print("0\n");
+			}
+		}
+	}
+
+	public void printWithSubset(Histogram h)
+	{
+		if (binMap.isEmpty())
+		{
+			h.print();
+			return;
+		}
+
+		Integer[] bins = binMap.keySet().toArray(new Integer[binMap.size()]);
+		Arrays.sort(bins);
+		Integer[] hbins = h.binMap.keySet().toArray(new Integer[h.binMap.size()]);
+		Arrays.sort(hbins);
+
+		int min = Math.min(bins[0], hbins[0]);
+		int max = Math.max(bins[bins.length - 1], hbins[hbins.length - 1]);
+
+		System.out.println("Range\tBackground count\tSelect count\tRatio");
+		for (int i = min; i <= max; i++)
+		{
+//			System.out.print((i * range) + "\t");
+			System.out.print(getIntervalString(i) + "\t");
+
+			int total = 0;
+			if (binMap.containsKey(i))
+			{
+				System.out.print(binMap.get(i) + "\t");
+				total = binMap.get(i);
+			}
+			else
+			{
+				System.out.print("0\t");
+			}
+
+			int select = 0;
+			if (h.binMap.containsKey(i))
+			{
+				System.out.print(h.binMap.get(i) + "\t");
+				select = h.binMap.get(i);
+			}
+			else
+			{
+				System.out.print("0\t");
+			}
+
+			if (total > 0)
+			{
+				System.out.print((select / (double) total) + "\n");
+			}
+			else
+			{
+				System.out.print("0\t");
 			}
 		}
 	}

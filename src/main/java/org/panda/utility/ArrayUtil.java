@@ -544,7 +544,12 @@ public class ArrayUtil
 
 	public static int indexOf(String[] array, String... query)
 	{
-		for (int i = 0; i < array.length; i++)
+		return indexOf(array, 0, query);
+	}
+
+	public static int indexOf(String[] array, int fromIndex, String... query)
+	{
+		for (int i = fromIndex; i < array.length; i++)
 		{
 			for (String q : query)
 			{

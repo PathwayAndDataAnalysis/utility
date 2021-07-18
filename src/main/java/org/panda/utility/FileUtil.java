@@ -322,6 +322,18 @@ public class FileUtil
 		}
 	}
 
+	public static void createDirectories(String path)
+	{
+		try
+		{
+			Files.createDirectories(Paths.get(path));
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+	}
+
 	public static void delete(File dir)
 	{
 		if (dir.isDirectory())
@@ -537,6 +549,20 @@ public class FileUtil
 		}
 	}
 
+	public static void writeStringToFile(String content, String filename)
+	{
+		try
+		{
+			BufferedWriter writer = Files.newBufferedWriter(Paths.get(filename));
+			writer.write(content);
+			writer.close();
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+	}
+
 	public interface StringArrayProcessor
 	{
 		void process(String[] array);
@@ -547,6 +573,30 @@ public class FileUtil
 		try
 		{
 			return Files.lines(Paths.get(filename));
+		}
+		catch (IOException e)
+		{
+			throw new RuntimeException(e);
+		}
+	}
+
+	public static Stream<String[]> linesTabbed(String filename)
+	{
+		try
+		{
+			return Files.lines(Paths.get(filename)).map(l -> l.split("\t"));
+		}
+		catch (IOException e)
+		{
+			throw new RuntimeException(e);
+		}
+	}
+
+	public static Stream<String[]> linesTabbedSkip1(String filename)
+	{
+		try
+		{
+			return Files.lines(Paths.get(filename)).skip(1).map(l -> l.split("\t"));
 		}
 		catch (IOException e)
 		{
@@ -566,9 +616,38 @@ public class FileUtil
 		}
 	}
 
+	public static String[] readHeader(String filename)
+	{
+		return lines(filename).findFirst().get().split("\t");
+	}
+
+	public static String[] readHeader(String filename, int skip)
+	{
+		return lines(filename).skip(skip).findFirst().get().split("\t");
+	}
+
 	public static boolean mkdirs(String path)
 	{
 		return (new File(path)).mkdirs();
+	}
+
+	public static void processDirsRecursive(File dir, ProcessDir fun) throws IOException
+	{
+		if (dir.isDirectory())
+		{
+			fun.run(dir);
+
+			for (File file : dir.listFiles())
+			{
+				processDirsRecursive(file, fun);
+			}
+		}
+
+	}
+
+	public interface ProcessDir
+	{
+		void run(File dir) throws IOException;
 	}
 
 	/**
@@ -734,7 +813,7 @@ public class FileUtil
 
 //		System.out.println(countLines("/home/babur/Projects/utility/PNNL-ovarian-correlations.txt"));
 //		printLines("/home/babur/Documents/Analyses/TF-activity/MultipleMyeloma/Filtered_GSE47552_series_matrix.txt", 20000, 20008);
-		printLines("/home/ozgun/Downloads/Homo_sapiens.GRCh37.87.gtf", "\"TP53\"", 100);
+		printLines("/Users/ozgun/Documents/Analyses/CausalPath-data/causal-priors.txt", "BRAF", 100);
 //		printLines("/home/ozgun/Downloads/Homo_sapiens.GRCh37.87.gtf", 0, 100);
 
 //		exciseFileToLines("/home/babur/Documents/PC/SignedPC-p2-e2.sif", "/home/babur/Documents/Papers/Authoring/CausalPath/temp.sif", line -> line.contains("http://identifiers.org/reactome/R-HSA-1183067"));

@@ -115,6 +115,54 @@ public class DirectedGraph extends Graph
 		}
 	}
 
+	public DirectedGraph getIntersectingGraph(DirectedGraph other)
+	{
+		DirectedGraph graph = new DirectedGraph("Intersection", getEdgeType());
+		Set<String> sources = getOneSideSymbols(true);
+		for (String source : other.getOneSideSymbols(true))
+		{
+			if (sources.contains(source))
+			{
+				for (String target : other.getDownstream(source))
+				{
+					if (this.hasRelation(source, target)) graph.putRelation(source, target);
+				}
+			}
+		}
+		return graph;
+	}
+
+	public DirectedGraph getDownstreamSubgraph(Set<String> seeds)
+	{
+		DirectedGraph subgraph = new DirectedGraph("Downstream graph", getEdgeType());
+
+		Set<String> currentSources = new HashSet<>();
+		Set<String> previousLayers = new HashSet<>();
+		Set<String> nextSources = new HashSet<>(seeds);
+
+		while (!nextSources.isEmpty())
+		{
+			previousLayers.addAll(currentSources);
+			currentSources.clear();
+			currentSources.addAll(nextSources);
+			nextSources.clear();
+
+			for (String node : currentSources)
+			{
+				Set<String> downstream = new HashSet<>(getDownstream(node));
+				downstream.removeAll(previousLayers);
+				for (String dw : downstream)
+				{
+					subgraph.putRelation(node, dw, getMediators(node, dw));
+				}
+				downstream.removeAll(currentSources);
+				nextSources.addAll(downstream);
+			}
+		}
+
+		return subgraph;
+	}
+
 	public boolean isDirected()
 	{
 		return true;
@@ -357,6 +405,43 @@ public class DirectedGraph extends Graph
 		return false;
 	}
 
+	public DirectedGraph getInducedSubgraphWithoutDisconnectedNodes(Set<String> nodes)
+	{
+		DirectedGraph graph = new DirectedGraph("Subgraph of " + getName(), getEdgeType());
+
+		for (String node : nodes)
+		{
+			for (String dwstr : getDownstream(node))
+			{
+				if (nodes.contains(dwstr))
+				{
+					graph.putRelation(node, dwstr, getMediators(node, dwstr));
+				}
+			}
+		}
+		return graph;
+	}
+
+	public DirectedGraph getNeighborhoodInTheInducedSubgraph(Set<String> nodes, Set<String> focus)
+	{
+		DirectedGraph graph = new DirectedGraph("Subgraph of " + getName(), getEdgeType());
+
+		for (String node : nodes)
+		{
+			for (String dwstr : getDownstream(node))
+			{
+				if (nodes.contains(dwstr))
+				{
+					if (focus.contains(node) || focus.contains(dwstr))
+					{
+						graph.putRelation(node, dwstr, getMediators(node, dwstr));
+					}
+				}
+			}
+		}
+		return graph;
+	}
+
 	public Set<String> getOneSideSymbols(boolean source)
 	{
 		Set<String> syms = new HashSet<>();
@@ -377,6 +462,21 @@ public class DirectedGraph extends Graph
 	public boolean hasNode(String name)
 	{
 		return upMap.containsKey(name) || dwMap.containsKey(name);
+	}
+
+	public DirectedGraph getReverseGraph()
+	{
+		DirectedGraph graph = new DirectedGraph("Reverse of " + getName(), getEdgeType());
+
+		for (String source : getOneSideSymbols(true))
+		{
+			for (String target : getDownstream(source))
+			{
+				graph.putRelation(target, source, getMediators(source, target));
+			}
+		}
+
+		return graph;
 	}
 
 	class CommPoint implements Comparable
