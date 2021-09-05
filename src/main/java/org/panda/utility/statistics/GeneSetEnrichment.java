@@ -1,6 +1,7 @@
 package org.panda.utility.statistics;
 
 import org.panda.utility.CollectionUtil;
+import org.panda.utility.FileUtil;
 import org.panda.utility.ValToColor;
 
 import java.awt.*;
@@ -9,6 +10,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class GeneSetEnrichment
@@ -45,6 +47,23 @@ public class GeneSetEnrichment
 		});
 
 		return pvals;
+	}
+
+	public static void writeEnrichment(Collection<String> queryGenes, Map<String, Set<String>> geneSets,
+		Map<String, Double> pvals, String outFile) throws IOException
+	{
+		Map<String, Double> qvals = FDR.getQVals(pvals, null);
+		BufferedWriter writer = FileUtil.newBufferedWriter(outFile);
+		writer.write("Name\tP-value\tFDR\tContributors");
+
+		List<String> names = new ArrayList<>(pvals.keySet());
+		names.sort(Comparator.comparing(pvals::get));
+
+		names.forEach(name -> FileUtil.lnwrite(name + "\t" + pvals.get(name) + "\t" + qvals.get(name) + "\t" +
+			CollectionUtil.getIntersection(geneSets.get(name), queryGenes).stream().sorted()
+				.collect(Collectors.toList()), writer));
+
+		writer.close();
 	}
 
 	public static void graphGeneSetOverlaps(Map<String, Double> pvals, Map<String, Set<String>> contributers,
