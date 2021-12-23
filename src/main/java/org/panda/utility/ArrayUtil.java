@@ -542,6 +542,17 @@ public class ArrayUtil
 		return sb.toString();
 	}
 
+	public static String merge(String delim, double... array)
+	{
+		if (array.length == 0) return "";
+
+		StringBuilder sb = new StringBuilder(Double.toString(array[0]));
+
+		IntStream.range(1, array.length).forEach(i -> sb.append(delim).append(array[i]));
+
+		return sb.toString();
+	}
+
 	public static int indexOf(String[] array, String... query)
 	{
 		return indexOf(array, 0, query);
@@ -555,6 +566,20 @@ public class ArrayUtil
 			{
 				if (array[i].equals(q)) return i;
 			}
+		}
+		return -1;
+	}
+
+	public static int indexOf(double[] array, double query)
+	{
+		return indexOf(array, 0, query);
+	}
+
+	public static int indexOf(double[] array, int fromIndex, double query)
+	{
+		for (int i = fromIndex; i < array.length; i++)
+		{
+			if (array[i] == (query)) return i;
 		}
 		return -1;
 	}
@@ -682,5 +707,29 @@ public class ArrayUtil
 		String[] ss = new String[s.length - startIndex];
 		System.arraycopy(s, startIndex, ss, 0, ss.length);
 		return ss;
+	}
+
+	public static void removeQuotes(String[] array)
+	{
+		for (int i = 0; i < array.length; i++)
+		{
+			if (array[i].startsWith("\"")) array[i] = array[i].substring(1);
+			if (array[i].endsWith("\"")) array[i] = array[i].substring(0, array[i].length() - 1);
+		}
+	}
+
+	public static double max(double[] arr)
+	{
+		double max = -Double.MAX_VALUE;
+		for (double v : arr)
+		{
+			if (v > max) max = v;
+		}
+		return max;
+	}
+
+	public static int indexOfMax(double[] arr)
+	{
+		return indexOf(arr, max(arr));
 	}
 }

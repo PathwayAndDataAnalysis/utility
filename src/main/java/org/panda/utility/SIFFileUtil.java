@@ -7,9 +7,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class SIFFileUtil
@@ -257,5 +255,19 @@ public class SIFFileUtil
 
 		neigh.removeAll(seed);
 		return neigh;
+	}
+
+	/**
+	 * Ignores the relation types.
+	 */
+	public static Map<String, Set<String>> convertToMap(String sifFile)
+	{
+		Map<String, Set<String>> map = new HashMap<>();
+		FileUtil.linesTabbed(sifFile).forEach(t ->
+		{
+			if (!map.containsKey(t[0])) map.put(t[0], new HashSet<>());
+			map.get(t[0]).add(t[2]);
+		});
+		return map;
 	}
 }

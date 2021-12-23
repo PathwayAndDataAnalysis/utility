@@ -631,6 +631,11 @@ public class FileUtil
 		return (new File(path)).mkdirs();
 	}
 
+	public static boolean mkdirsOfFilePath(String filePath)
+	{
+		return (new File(filePath.substring(0, filePath.lastIndexOf(File.separator)))).mkdirs();
+	}
+
 	public static void processDirsRecursive(File dir, ProcessDir fun) throws IOException
 	{
 		if (dir.isDirectory())
@@ -798,6 +803,11 @@ public class FileUtil
 			if (child.isDirectory()) list.addAll(getSubdirectoriesContaining(child.getPath(), file));
 		}
 		return list;
+	}
+
+	public static boolean exists(String path)
+	{
+		return Files.exists(Paths.get(path));
 	}
 
 	public static void main(String[] args) throws IOException

@@ -314,6 +314,21 @@ public class CollectionUtil
 		return m.isEmpty() ? -Integer.MAX_VALUE : m.iterator().next();
 	}
 
+	public static double averageInListOfDouble(List<Double> list)
+	{
+		double sum = 0;
+		int cnt = 0;
+		for (Double d : list)
+		{
+			if (!d.isNaN())
+			{
+				sum += d;
+				cnt++;
+			}
+		}
+		return cnt == 0 ? Double.NaN : sum / cnt;
+	}
+
 	/**
 	 * Gets a new set, which is A - B.
 	 */
