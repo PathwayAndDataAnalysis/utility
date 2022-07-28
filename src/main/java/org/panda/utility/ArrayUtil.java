@@ -560,9 +560,9 @@ public class ArrayUtil
 
 	public static int indexOf(String[] array, int fromIndex, String... query)
 	{
-		for (int i = fromIndex; i < array.length; i++)
+		for (String q : query)
 		{
-			for (String q : query)
+			for (int i = fromIndex; i < array.length; i++)
 			{
 				if (array[i].equals(q)) return i;
 			}

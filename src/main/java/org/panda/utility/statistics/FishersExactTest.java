@@ -1,7 +1,11 @@
 package org.panda.utility.statistics;
 
+import org.apache.commons.math3.distribution.HypergeometricDistribution;
+import org.panda.utility.Kronometre;
+
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Random;
 
 /**
  * Consider below two-by-two table of counts of two traits.
@@ -66,19 +70,24 @@ public class FishersExactTest
 		assert featuredSelected <= selected;
 		assert featuredSelected <= featuredOverall;
 
-		return calcPositiveDepPval(size - selected - featuredOverall + featuredSelected,
-			featuredOverall - featuredSelected, selected - featuredSelected, featuredSelected);
+//		return calcPositiveDepPval(size - selected - featuredOverall + featuredSelected,
+//			featuredOverall - featuredSelected, selected - featuredSelected, featuredSelected);
+
+		HypergeometricDistribution hd = new HypergeometricDistribution(size, featuredOverall, selected);
+		return hd.upperCumulativeProbability(featuredSelected);
 	}
 
-	public static double calcImprovishmentPval(int size, int featuredOverall, int selected,
-		int featuredSelected)
+	public static double calcDeficiencyPval(int size, int featuredOverall, int selected, int featuredSelected)
 	{
 		assert selected <= size;
 		assert featuredSelected <= selected;
 		assert featuredSelected <= featuredOverall;
 
-		return calcNegativeDepPval(size - selected - featuredOverall + featuredSelected,
-			featuredOverall - featuredSelected, selected - featuredSelected, featuredSelected);
+//		return calcNegativeDepPval(size - selected - featuredOverall + featuredSelected,
+//			featuredOverall - featuredSelected, selected - featuredSelected, featuredSelected);
+
+		HypergeometricDistribution hd = new HypergeometricDistribution(size, featuredOverall, selected);
+		return hd.cumulativeProbability(featuredSelected);
 	}
 
 	public static double getPvalOfMeanDiff_discretizeToTwo(double[] x0, double[] x1)
@@ -106,10 +115,14 @@ public class FishersExactTest
 
 	public static void main(String[] args)
 	{
-		System.out.println(calcEnrichmentPval(100, 30, 20, 14));
-		System.out.println(ChiSquare.testEnrichment(100, 30, 20, 14));
-//		System.out.println(calcPositiveDepPval(64, 6, 16, 14));
+//		System.out.println(calcEnrichmentPval(100, 30, 20, 14));
+//		System.out.println(ChiSquare.testEnrichment(100, 30, 20, 14));
 
+//		int a = 21, b = 20, c = 34, d = 13;
+//		System.out.println(calcPositiveDepPval(a, b, c, d));
+//		System.out.println(calcNegativeDepPval(a, b, c, d));
+
+		commonsTest();
 	}
 
 	public static double calcCoocPval(boolean[] b1, boolean[] b2)
@@ -133,5 +146,34 @@ public class FishersExactTest
 		}
 
 		return calcPositiveDepPval(a, b, c, d);
+	}
+
+	public static void commonsTest()
+	{
+		Random rand = new Random();
+
+		Kronometre kron = new Kronometre();
+		kron.start();
+
+		double sum = 0;
+		for (int i = 0; i < 10000; i++)
+		{
+			int populationSize = 1000;
+			int featured = rand.nextInt(populationSize);
+			int selected = rand.nextInt(populationSize);
+			int overlap = rand.nextInt(Math.min(featured, selected) + 1);
+
+//			HypergeometricDistribution hd = new HypergeometricDistribution(populationSize, featured, selected);
+//			double p = hd.upperCumulativeProbability(overlap);
+
+			double p = calcEnrichmentPval(populationSize, featured, selected, overlap);
+
+			sum += p;
+		}
+
+		System.out.println("sum = " + sum);
+
+		kron.stop();
+		kron.print();
 	}
 }

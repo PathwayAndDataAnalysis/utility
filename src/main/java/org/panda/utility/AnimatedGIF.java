@@ -18,7 +18,8 @@ import java.io.File;
  *
  * @author Andrew Thompson
  */
-class AnimatedGif {
+public class AnimatedGIF
+{
 
 	/**
 	 * See http://forums.sun.com/thread.jspa?messageID=10755673#10755673

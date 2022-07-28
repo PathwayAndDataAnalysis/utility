@@ -604,6 +604,18 @@ public class FileUtil
 		}
 	}
 
+	public static Stream<String[]> linesTabbedSkip(String filename, int skip)
+	{
+		try
+		{
+			return Files.lines(Paths.get(filename)).skip(skip).map(l -> l.split("\t"));
+		}
+		catch (IOException e)
+		{
+			throw new RuntimeException(e);
+		}
+	}
+
 	public static Stream<String> lines(Path path)
 	{
 		try

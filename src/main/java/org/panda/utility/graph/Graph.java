@@ -166,17 +166,20 @@ public abstract class Graph implements Serializable
 
 	public void addMediators(String source, String target, Collection<String> meds)
 	{
-		if (!mediators.containsKey(source))
+		if (meds != null && !meds.isEmpty())
 		{
-			mediators.put(source, new HashMap<>());
-		}
+			if (!mediators.containsKey(source))
+			{
+				mediators.put(source, new HashMap<>());
+			}
 
-		if (!mediators.get(source).containsKey(target))
-		{
-			mediators.get(source).put(target, new HashSet<>());
-		}
+			if (!mediators.get(source).containsKey(target))
+			{
+				mediators.get(source).put(target, new HashSet<>());
+			}
 
-		mediators.get(source).get(target).addAll(meds);
+			mediators.get(source).get(target).addAll(meds);
+		}
 	}
 
 	public void removeMediators(String source, String target)
@@ -562,7 +565,7 @@ public abstract class Graph implements Serializable
 	{
 		String type = "downregulates-expression";
 		DirectedGraph dg = new DirectedGraph(type, type);
-		dg.load("/home/ozgun/Analyses/CausalPath-paper/causal-priors.txt", Collections.singleton(type));
+		dg.load("/home/ozgunbabur/Data/causal-priors.txt", Collections.singleton(type));
 		dg.printStats();
 	}
 }

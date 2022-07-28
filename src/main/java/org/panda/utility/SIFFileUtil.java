@@ -125,6 +125,26 @@ public class SIFFileUtil
 		writer.close();
 	}
 
+	public static void writePatsBetween(String sifFile, Collection<String> seed, String outFile) throws IOException
+	{
+		BufferedWriter writer = Files.newBufferedWriter(Paths.get(outFile));
+
+		Files.lines(Paths.get(sifFile)).forEach(l ->
+		{
+			String[] t = l.split("\t");
+
+			if (t.length > 2)
+			{
+				if (seed.contains(t[0]) && seed.contains(t[2]))
+				{
+					FileUtil.lnwrite(l, writer);
+				}
+			}
+		});
+
+		writer.close();
+	}
+
 	public static void writeSubgraph(String sifFile, DirectedGraph subgraph, String outFile) throws IOException
 	{
 		BufferedWriter writer = Files.newBufferedWriter(Paths.get(outFile));

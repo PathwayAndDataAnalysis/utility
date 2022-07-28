@@ -32,7 +32,12 @@ public class SiteSpecificGraph extends DirectedGraph
 			if (!sites.get(source).containsKey(target))
 				sites.get(source).put(target, new HashSet<>());
 
-			sites.get(source).get(target).addAll(Arrays.asList(siteString.split(";")));
+			try
+			{
+				sites.get(source).get(target).addAll(Arrays.asList(siteString.split(";")));
+			}catch(Exception e){
+				System.out.println();
+			}
 		}
 	}
 
