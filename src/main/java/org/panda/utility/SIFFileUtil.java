@@ -104,9 +104,9 @@ public class SIFFileUtil
 		writeNeighborhood(sifFile, seed, outFile, StreamDirection.BOTHSTREAM);
 	}
 
-	public static void writeNeighborhood(String sifFile, Collection<String> seed, String outFile, StreamDirection d) throws IOException
+	public static boolean writeNeighborhood(String sifFile, Collection<String> seed, String outFile, StreamDirection d) throws IOException
 	{
-		BufferedWriter writer = Files.newBufferedWriter(Paths.get(outFile));
+		List<String> select = new ArrayList<>();
 
 		Files.lines(Paths.get(sifFile)).forEach(l ->
 		{
@@ -117,12 +117,17 @@ public class SIFFileUtil
 				if (((d == StreamDirection.DOWNSTREAM || d == StreamDirection.BOTHSTREAM) && seed.contains(t[0])) ||
 					((d == StreamDirection.UPSTREAM || d == StreamDirection.BOTHSTREAM) && seed.contains(t[2])))
 				{
-					FileUtil.lnwrite(l, writer);
+					select.add(l);
 				}
 			}
 		});
 
-		writer.close();
+		if (select.isEmpty()) return false;
+		else
+		{
+			FileUtil.writeLinesToFile(select, outFile);
+			return true;
+		}
 	}
 
 	public static void writePatsBetween(String sifFile, Collection<String> seed, String outFile) throws IOException
