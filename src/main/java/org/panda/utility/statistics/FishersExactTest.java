@@ -90,6 +90,32 @@ public class FishersExactTest
 		return hd.cumulativeProbability(featuredSelected);
 	}
 
+	public static double calcDeficiencyPval(boolean[] alt1, boolean[] alt2)
+	{
+		int[] cnts = alterationsToCounts(alt1, alt2);
+		return calcDeficiencyPval(cnts[0], cnts[1], cnts[2], cnts[3]);
+	}
+
+	public static int[] alterationsToCounts(boolean[] alt1, boolean[] alt2)
+	{
+		if (alt1.length != alt2.length)
+			throw new IllegalArgumentException("Array sizes unequal. It is " + alt1.length + " versus " + alt2.length);
+
+		int[] cnts = new int[4];
+		cnts[0] = alt1.length;
+
+		for (int i = 0; i < alt1.length; i++)
+		{
+			if (alt1[i])
+			{
+				cnts[1]++;
+				if (alt2[i]) cnts[3]++;
+			}
+			if (alt2[i]) cnts[2]++;
+		}
+		return cnts;
+	}
+
 	public static double getPvalOfMeanDiff_discretizeToTwo(double[] x0, double[] x1)
 	{
 		double[] d = new double[x0.length + x1.length];
