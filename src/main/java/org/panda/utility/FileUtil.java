@@ -563,6 +563,13 @@ public class FileUtil
 		}
 	}
 
+	public static void addStringToFile(String content, String filename)
+	{
+		String fileContent = getFileContent(filename);
+		fileContent += "\n" + content;
+		writeStringToFile(fileContent, filename);
+	}
+
 	public interface StringArrayProcessor
 	{
 		void process(String[] array);
