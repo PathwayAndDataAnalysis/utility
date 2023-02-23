@@ -358,6 +358,22 @@ public class FileUtil
 		}
 	}
 
+	public static void write(String[] t, String delim, Writer writer)
+	{
+		try
+		{
+			if (t.length > 0) writer.write(t[0]);
+			for (int i = 1; i < t.length; i++)
+			{
+				writer.write(delim + t[i]);
+			}
+		}
+		catch (IOException e)
+		{
+			throw new RuntimeException(e);
+		}
+	}
+
 	public static void writeln(String line, Writer writer)
 	{
 		write(line + "\n", writer);
@@ -366,6 +382,12 @@ public class FileUtil
 	public static void lnwrite(String line, Writer writer)
 	{
 		write("\n" + line, writer);
+	}
+
+	public static void lnwrite(String[] t, String delim, Writer writer)
+	{
+		write("\n", writer);
+		write(t, delim, writer);
 	}
 
 	public static void write_tab(String token, Writer writer)
@@ -635,9 +657,14 @@ public class FileUtil
 		}
 	}
 
+	public static String readFirstLine(String filename)
+	{
+		return lines(filename).findFirst().get();
+	}
+
 	public static String[] readHeader(String filename)
 	{
-		return lines(filename).findFirst().get().split("\t");
+		return readFirstLine(filename).split("\t");
 	}
 
 	public static String[] readHeader(String filename, int skip)

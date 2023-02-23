@@ -90,7 +90,7 @@ public class RankSelectionNullDistrOneTailed
 	{
 		int[] cum = cumCntMap.get(selectionSize);
 		if (rankSum >= cum.length) return 1;
-		else return cum[rankSum] / randomizationCount;
+		else return Math.max(cum[rankSum], 1) / randomizationCount;
 	}
 
 	public static void main(String[] args)
