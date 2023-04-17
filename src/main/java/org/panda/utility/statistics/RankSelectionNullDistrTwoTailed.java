@@ -31,8 +31,8 @@ public class RankSelectionNullDistrTwoTailed extends RankSelectionNullDistrOneTa
 		Map<Integer, Map<Integer, Integer>> countsMap = new HashMap<>();
 		selectionSizes.forEach(s -> countsMap.put(s, new HashMap<>()));
 
-//		Progress prg = new Progress(randomizationCount, "Generating null distribution");
-		for (int i = 0; i < randomizationCount; i++/*, prg.tick()*/)
+		Progress prg = new Progress(randomizationCount, "Generating null distribution");
+		for (int i = 0; i < randomizationCount; i++, prg.tick())
 		{
 			rPermutation(list, rPerm);
 
