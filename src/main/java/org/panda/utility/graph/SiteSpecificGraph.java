@@ -2,9 +2,9 @@ package org.panda.utility.graph;
 
 import org.panda.utility.CollectionUtil;
 
-import java.io.IOException;
-import java.io.Writer;
+import java.io.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Extension of Graph where the affected phospho sites of relations are also kept.
@@ -89,6 +89,12 @@ public class SiteSpecificGraph extends DirectedGraph
 		}
 	}
 
+	public Set<String> getUpstream(String target, Set<String> sites)
+	{
+		Set<String> upstream = getUpstream(target, 1);
+		return upstream.stream().filter(source -> !CollectionUtil.intersectionEmpty(getSites(source, target), sites)).collect(Collectors.toSet());
+	}
+
 	@Override
 	public void merge(DirectedGraph graph)
 	{
@@ -140,5 +146,40 @@ public class SiteSpecificGraph extends DirectedGraph
 		{
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	public boolean load(InputStream is, Set<String> types)
+	{
+		try
+		{
+			BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+
+			for (String line = reader.readLine(); line != null; line = reader.readLine())
+			{
+				String[] token = line.split("\t");
+
+				if (token.length < 3) continue;
+
+				if (types == null || types.contains(token[1]))
+				{
+					if (token.length > 4)
+					{
+						putRelation(token[0], token[2], token[3], token[4]);
+					}
+					else if (token.length > 3)
+					{
+						putRelation(token[0], token[2], token[3]);
+					}
+					else
+					{
+						putRelation(token[0], token[2]);
+					}
+				}
+			}
+
+			reader.close();
+		}
+		catch (IOException e) { e.printStackTrace(); return false; } return true;
 	}
 }
