@@ -86,6 +86,7 @@ public class CorrelationSIFGenerator extends SIFGenerator
 	public void setMaxNegCorrColor(Color maxNegCorrColor)
 	{
 		this.maxNegCorrColor = maxNegCorrColor;
+		System.out.println("Add");
 
 	}
 }
