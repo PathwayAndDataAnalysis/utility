@@ -331,6 +331,11 @@ public class Summary
 		return Math.sqrt(variance(x));
 	}
 
+	public static double stdevOfDoublesInList(List<Double> x)
+	{
+		return Math.sqrt(varianceOfDoublesInList(x));
+	}
+
 	public static double stdev(double[] x, int[] ind)
 	{
 		return Math.sqrt(variance(x, ind));
@@ -358,6 +363,25 @@ public class Summary
 	public static double variance(Double[] x)
 	{
 		double mean = mean(x);
+		double var = 0;
+		int cnt = 0;
+
+		for (Double v : x)
+		{
+			if (v != null && !v.isNaN())
+			{
+				double term = v - mean;
+				var += term * term;
+				cnt++;
+			}
+		}
+
+		return cnt == 0 ? Double.NaN : var / cnt;
+	}
+
+	public static double varianceOfDoublesInList(List<Double> x)
+	{
+		double mean = meanOfDoubles(x);
 		double var = 0;
 		int cnt = 0;
 

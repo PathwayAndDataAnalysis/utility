@@ -124,6 +124,13 @@ public class TermCounter
 		h.printDensity();
 	}
 
+	public double getMeanCountPerTerm()
+	{
+		int[] sum = new int[]{0};
+		termMap.values().stream().forEach(i -> sum[0] += i.count);
+		return sum[0] / (double) termMap.size();
+	}
+
 	public void print()
 	{
 		System.out.println(this);
