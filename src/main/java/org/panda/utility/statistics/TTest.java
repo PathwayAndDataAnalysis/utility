@@ -100,7 +100,7 @@ public class TTest
 	{
 		if (control.length > 2 && test.length > 2)
 		{
-			return new Tuple(TestUtils.t(test, control), getPValOfMeanDifference(test, control));
+			return new Tuple(TestUtils.t(test, control), getPValOfMeanDifference(control, test));
 		}
 		else if (control.length == 2 && test.length > 2)
 		{

@@ -181,4 +181,10 @@ public class TermCounter
 		}
 		return map;
 	}
+
+	public int getCountOfTerm(String term)
+	{
+		if (termMap.containsKey(term)) return termMap.get(term).count;
+		return 0;
+	}
 }

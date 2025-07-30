@@ -211,6 +211,19 @@ public class FileUtil
 		return null;
 	}
 
+	public static long findNumberOfLines(String filename)
+	{
+		try
+		{
+			return Files.lines(Paths.get(filename)).count();
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+		return -1;
+	}
+
 	public static void printLines(String filename, String partialContent) throws IOException
 	{
 		printLines(filename, partialContent, Integer.MAX_VALUE);
