@@ -789,7 +789,6 @@ public class FileUtil
 	}
 	catch (IOException e){throw new RuntimeException(e);}}
 
-
 	//--- Section: SIF files ------------------------------------------------------------------------------------------|
 
 	public static void replaceNodeNamesInSIFFile(String filename, Map<String, String> substutitionMap) { try
@@ -882,7 +881,7 @@ public class FileUtil
 
 //		System.out.println(countLines("/home/babur/Projects/utility/PNNL-ovarian-correlations.txt"));
 //		printLines("/home/babur/Documents/Analyses/TF-activity/MultipleMyeloma/Filtered_GSE47552_series_matrix.txt", 20000, 20008);
-		printLines("/Users/ozgun/Documents/Analyses/CausalPath-data/causal-priors.txt", "BRAF", 100);
+//		printLines("/Users/ozgun/Documents/Analyses/CausalPath-data/causal-priors.txt", "BRAF", 100);
 //		printLines("/home/ozgun/Downloads/Homo_sapiens.GRCh37.87.gtf", 0, 100);
 
 //		exciseFileToLines("/home/babur/Documents/PC/SignedPC-p2-e2.sif", "/home/babur/Documents/Papers/Authoring/CausalPath/temp.sif", line -> line.contains("http://identifiers.org/reactome/R-HSA-1183067"));
@@ -896,5 +895,8 @@ public class FileUtil
 //		countTermsInTabDelimitedColumn("/home/babur/Downloads/trrust_rawdata.txt", 2);
 
 //		System.out.println(sameFiles("/home/babur/Documents/mutex/TCGA/PanCan/1/1/DataMatrix.txt", "/home/babur/Documents/mutex/TCGA/PanCan-shuffled/1/1/DataMatrix.txt"));
+
+		transpose("/home/ozgunbabur/Analyses/Kale/Sim2/Simulated_data_v2.tsv", "\t",
+			"/home/ozgunbabur/Analyses/Kale/Sim2/Simulated_data_v2_transposed.tsv", "\t", null, null);
 	}
 }

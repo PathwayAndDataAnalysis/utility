@@ -125,6 +125,7 @@ public class SIFFileUtil
 		if (select.isEmpty()) return false;
 		else
 		{
+			FileUtil.mkdirsOfFilePath(outFile);
 			FileUtil.writeLinesToFile(select, outFile);
 			return true;
 		}
@@ -294,5 +295,12 @@ public class SIFFileUtil
 			map.get(t[0]).add(t[2]);
 		});
 		return map;
+	}
+
+	public static void main(String[] args) throws IOException
+	{
+		writeNeighborhood("/home/ozgunbabur/Data/causal-priors.txt",
+			new HashSet<>(Arrays.asList("CHEBI:16908", "CHEBI:15846")),
+			"/home/ozgunbabur/Analyses/CPTAC-LSCC/v3/custom-NRF2-comparison/NADH-neigh.sif");
 	}
 }
